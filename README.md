@@ -20,6 +20,9 @@ Syntax highlighted code block
 
 1. Numbered
 2. List
+3. With Bulleted Sublist
+  - Sub 1
+  - Sub 2
 
 **Bold** and _Italic_ and `Code` text
 
