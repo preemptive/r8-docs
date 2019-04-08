@@ -2,7 +2,7 @@
 
 ## Enabling
 
-You can enable a ProGuard or R8 in your Android project for a build type by using the `minifyEnabled` setting in your Gradle buildscript, at the application or library level:
+You can enable a ProGuard or R8 in your Android project for a build type by using the `minifyEnabled` setting in your application or library's Gradle buildscript:
 
 ```gradle
 android {
@@ -14,8 +14,8 @@ android {
 }
 ```
 
-R8 has been available with the Android Gradle Plugin since v3.2.0 of the Android Gradle Plugin, and is enabled by default in v3.4.0 and later.
-To enable R8 in versions where it is supported but not enabled by default (v3.2.x or v3.3.x), add `android.enableR8=true` to your `gradle.properties` file.
+R8 has been available with the Android Gradle Plugin since v3.2.0, and is enabled by default in v3.4.0 and later.
+To enable R8 with versions of the Android Gradle Plugin where R8 is supported but not enabled by default (v3.2.x or v3.3.x), add `android.enableR8=true` to your `gradle.properties` file.
 
 ## Minification and Obfuscation
 
