@@ -40,7 +40,7 @@ You can specify your own R8 rules in such a file.
 
 >**NOTE:** The Android Gradle Plugin will generate additional rules based on references to classes in your application's or library's manifest and resources.
 
-You can also specify `proguardFiles` for product flavors:
+You can also specify additional configuration files for product flavors using `proguardFile`:
 
 ```gradle
 android {
@@ -48,11 +48,11 @@ android {
     productFlavors {
         free {
             dimension 'monetization'
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'free-rules.txt' 
+            proguardFile 'free-rules.txt' 
         }
         paid {
             dimension 'monetization'
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'paid-rules.txt' 
+            proguardFile 'paid-rules.txt' 
         }
     }
 }
