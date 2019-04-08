@@ -1,4 +1,5 @@
 theme: jekyll-theme-leap-day
+PAGES_REPO_NWO=preemptive/r8-docs
 # Google Analytics
 google_analytics: UA-192900-3
 

@@ -1,40 +1,39 @@
-## Welcome to GitHub Pages
+## Introduction
 
-You can use the [editor on GitHub](https://github.com/preemptive/r8-docs/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+## Enabling
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+When `minifyEnabled` is set to `true` the Android Gradle Plugin will use either R8 or ProGuard for minification.
+R8 has been available since v3.2.0 of the Android Gradle Plugin and is enabled by default in v3.4.0.
+In prior versions it can be enabled by adding `android.enableR8=true` to the `gradle.properties` file.
 
-### Markdown
+## Minification and Obfuscation
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+Minification and Obfuscation are configured by using the many  `-keep` based rules.
 
-```markdown
-Syntax highlighted code block
+|                       Name               |        Description                                 |
+|------------------------------------------|----------------------------------------------------|
+| `-keep class` *{specification}*          | ...                                                |
 
-# Header 1
-## Header 2
-### Header 3
+## Renaming Configuration
 
-- Bulleted
-- List
+By using dictionaries and maps, it is possible to control, to a degree, how R8 will determine the new names for classes, methods, and fields.
 
-1. Numbered
-2. List
-3. With Bulleted Sublist
-  - Sub 1
-  - Sub 2
+## Unsupported Options
 
-**Bold** and _Italic_ and `Code` text
+There are several ProGuard rules which R8 does not support.  It may error or just ignore the rule.
 
-[Link](url) and ![Image](src)
-```
+### Erroring Options
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+Some options are not supported and will cause R8 to error. 
 
-### Jekyll Themes
+* `-skipnonpubliclibraryclasses`
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/preemptive/r8-docs/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
 
-### Support or Contact
+### Ignored options
 
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+Some options are simply not relvant to Android projects and will be ignored.
+
+* `-optimizationpasses`
+
+
+
