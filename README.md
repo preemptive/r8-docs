@@ -40,6 +40,24 @@ You can specify your own R8 rules in such a file.
 
 >**NOTE:** The Android Gradle Plugin will generate additional rules based on references to classes in your application's or library's manifest and resources.
 
+You can also specify `proguardFiles` for product flavors:
+
+```gradle
+android {
+    flavorDimensions 'monetization'
+    productFlavors {
+        free {
+            dimension 'monetization'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'free-rules.txt' 
+        }
+        paid {
+            dimension 'monetization'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'paid-rules.txt' 
+        }
+    }
+}
+```
+
 ## Minification and Obfuscation
 
 Minification and Obfuscation are configured by using the many  `-keep` based rules.
