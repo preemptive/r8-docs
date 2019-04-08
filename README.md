@@ -1,8 +1,8 @@
 ## Introduction
 
-## Enabling
+## Enabling R8
 
-You can enable a ProGuard or R8 in your Android project for a build type by using the `minifyEnabled` setting in your application or library's Gradle buildscript:
+You can enable ProGuard or R8 in your Android project for a build type by using the `minifyEnabled` setting in your application's or library's Gradle buildscript:
 
 ```gradle
 android {
@@ -16,6 +16,29 @@ android {
 
 R8 has been available with the Android Gradle Plugin since v3.2.0, and is enabled by default in v3.4.0 and later.
 To enable R8 with versions of the Android Gradle Plugin where R8 is supported but not enabled by default (v3.2.x or v3.3.x), add `android.enableR8=true` to your `gradle.properties` file.
+
+### Specifying R8 Configuration Files
+
+You can specify any number of R8 configuration files for a build type or product flavor using the `proguardFiles` setting in your application's or library's Gradle buildscript:
+
+```gradle
+android {
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'custom-rules.txt' 
+        } 
+    }
+}
+```
+
+The `getDefaultProguardFile()` method specifies a configuration file provided by the Android Gradle Plugin that contains basic settings.
+You can use `'proguard-android.txt'` for the default ruleset used by the Android Gradle Plugin, or `'proguard-android-optimize.txt'` to enable optimization.
+
+In this example, `'custom-rules.txt'` refers to a configuration file named 'custom-rules.txt' in the same directory as your application's or library's `build.gradle` file.
+You can specify your own R8 rules in such a file.
+
+>**NOTE:** The Android Gradle Plugin will generate additional rules based on references to classes in your application's or library's manifest and resources.
 
 ## Minification and Obfuscation
 
