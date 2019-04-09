@@ -14,8 +14,14 @@ android {
 }
 ```
 
-R8 has been available with the Android Gradle Plugin since v3.2.0, and is enabled by default in v3.4.0 and later.
-To enable R8 with versions of the Android Gradle Plugin where R8 is supported but not enabled by default (v3.2.x or v3.3.x), add `android.enableR8=true` to your `gradle.properties` file.
+R8 has been available with the Android Gradle Plugin since v3.2.0, and is the default minifier used when `minifyEnabled` is set to `true` in v3.4.0 and later.
+To enable R8 with versions of the Android Gradle Plugin prior to v3.4.0, add `android.enableR8=true` to your `gradle.properties` file.
+
+You can enable additional optimizations by enabling R8's *Full Mode* in your `gradle.properties` file ([Learn More](https://android-developers.googleblog.com/2018/11/r8-new-code-shrinker-from-google-is.html)):
+
+```properties
+android.enableR8.fullMode=true
+```
 
 ### Specifying R8 Configuration Files
 
@@ -83,7 +89,7 @@ The following settings will cause R8 to issue a warning message:
 * `-optimizationpasses` (enabled by `proguard-android-optimize.txt`)
 * `-optimizations`
 
-The following settings are simply ignored:
+The following settings are ignored:
 
 * `-addconfigurationdebugging`
 * `-android`
