@@ -9,6 +9,10 @@
     {% endif %}
 
 {% seo %}
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <link href="//fonts.googleapis.com/css?family=Lato:400,300,400italic,300italic,700,700italic,900" rel="stylesheet" type="text/css" />
+    <link href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic" rel="stylesheet" type="text/css" />
+    <link href="//fonts.googleapis.com/css?family=PT+Mono" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
     <script src="https://code.jquery.com/jquery-3.3.0.min.js" integrity="sha256-RTQy8VOmNlT6b2PIRur37p6JEBZUE7o8wPgMvu18MC4=" crossorigin="anonymous"></script>
     <script src="{{ '/assets/js/main.js' | relative_url }}"></script>
@@ -26,18 +30,7 @@
       </header>
 
       <div id="banner">
-        <span id="logo"></span>
-
-        <a href="{{ site.github.repository_url }}" class="button fork"><strong>View On GitHub</strong></a>
-        {% if site.show_downloads %}
-          <div class="downloads">
-            <span>Downloads:</span>
-            <ul>
-              <li><a href="{{ site.github.zip_url }}" class="button">ZIP</a></li>
-              <li><a href="{{ site.github.tar_url }}" class="button">TAR</a></li>
-            </ul>
-          </div>
-        {% endif %}
+        <a target="_blank" class="ps-button" href="https://www.preemptive.com/products/dasho/overview"><img src="assets/img/PreEmptive-logo-400w.jpg"></img></a>
       </div><!-- end banner -->
 
     <div class="wrapper">
@@ -45,16 +38,20 @@
         <ul></ul>
       </nav>
       <section>
-        {{ content }}
+        {{ content 
+            | replace: '<a href="https://www.preemptive.com', '<a target="_blank" href="https://www.preemptive.com' 
+            | replace: '<a href="pg_man', '<a href="https://www.guardsquare.com/en/products/proguard/manual/usage'  
+            | replace: '<a href="itg/', '<a href="https://issuetracker.google.com/issues/'
+            | replace: '<a href="http', '<a rel="nofollow" target="_blank" href="http'
+            }}
 
       </section>
       <footer>
         {% if site.github.is_project_page %}
-          <p>Project maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></p>
+          <p>Project maintained by <a href="{{ site.github.owner_url }}">PreEmptive Solutions, LLC.</a></p>
         {% endif %}
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/mattgraham">mattgraham</a></small></p>
+        <p><small><a target="_blank" href="{{ site.github.repository_url }}">Hosted on GitHub</a></small></p>
       </footer>
     </div>
-
   </body>
 </html>
