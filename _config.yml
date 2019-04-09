@@ -1,4 +1,10 @@
-theme: jekyll-theme-leap-day
 # Google Analytics
 google_analytics: UA-192900-3
-
+title: "R8 Documentation"
+theme: jekyll-theme-leap-day
+repository: preemptive/r8-docs
+defaults:
+    - scope:
+        path: "assets/img"
+      values:
+        image: true
