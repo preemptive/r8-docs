@@ -72,20 +72,32 @@ By using dictionaries and maps, it is possible to control, to a degree, how R8 w
 
 ## Unsupported Options
 
-There are several ProGuard rules which R8 does not support.  It may error or just ignore the rule.
+Some ProGuard options are unsupported by R8 and will not be honored.
 
-### Erroring Options
-
-Some options are not supported and will cause R8 to error. 
+The following setting will cause R8 to issue an error:
 
 * `-skipnonpubliclibraryclasses`
 
+The following settings will cause R8 to issue a warning message:
 
-### Ignored options
+* `-optimizationpasses` (enabled by `proguard-android-optimize.txt`)
+* `-optimizations`
 
-Some options are simply not relvant to Android projects and will be ignored.
+The following settings are simply ignored:
 
-* `-optimizationpasses`
-
-
-
+* `-addconfigurationdebugging`
+* `-android`
+* `-assumenoescapingparameters`
+* `-assumenoexternalreturnvalues`
+* `-assumenoexternalsideefffects`
+* `-dontpreverify`
+* `-dontskipnonpubliclibraryclasses`
+* `-dontskipnonpubliclibraryclassmembers`
+* `-dontusemixedcaseclassnames`
+* `-dump`
+* `-forceprocessing`
+* `-keepparameternames`
+* `-mergeinterfacesaggressively`
+* `-outjars`
+* `-target`
+* `-useuniqueclassmembernames`
