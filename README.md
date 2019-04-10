@@ -1,13 +1,26 @@
 ## Introduction
 
-This is *<small>un</small>official* documentation for [R8](https://www.preemptive.com/blog/article/1101-r8-a-step-in-google-s-android-build-performance-roadmap/89-DashO).
-Google intends R8 to be a drop-in replacement for ProGuard but there are some differences in what is supported and how it works.
+This site is unofficial documentation for [R8](https://android-developers.googleblog.com/2018/11/r8-new-code-shrinker-from-google-is.html), Google's code shrinker for Android.
+Google intends R8 to be a drop-in replacement for [ProGuard](https://www.guardsquare.com/en/products/proguard), and, as R8 is designed to be compatible with most R8 rules, the [ProGuard Manual](pg_man) is a valuable reference for R8.
+However, there still are substantial differences between R8 and ProGuard, and Google has not documented those differences.
+This site is meant to fill that gap.
+
+This site is [open source on GitHub](https://github.com/preemptive/r8-docs) and we encourage you to contribute by opening [issues](https://github.com/preemptive/r8-docs/issues) or submitting pull requests.
+
+### Assumptions
+
+This documentation assumes that you are using the standard Gradle build process of an Android application or library with version 3.4 or later of the Android Gradle Plugin.
+It is not suitable if you are using R8 directly in a custom build process.
 
 >**Note:** Known issues reflected in this document were last tested on R8 v1.4.77 using Android Gradle Plugin v3.4.0-rc03.
 
+### Who We Are
+
+[PreEmptive Solutions](https://www.preemptive.com) is the developer of [PreEmptive Protection - DashO](https://www.preemptive.com/products/dasho/overview), which provides powerful obfuscation and shielding for Android applications and libraries.
+
 ## Enabling R8
 
-You can enable ProGuard or R8 in your Android project for a build type by using the `minifyEnabled` setting in your application's or library's Gradle buildscript:
+You can enable R8 in your Android project for a build type by using the `minifyEnabled` setting in your application's or library's Gradle buildscript:
 
 ```gradle
 android {
@@ -19,10 +32,7 @@ android {
 }
 ```
 
-R8 has been available with the Android Gradle Plugin since v3.2.0, and is the default minifier used when `minifyEnabled` is set to `true` in v3.4.0 and later.
-To enable R8 with versions of the Android Gradle Plugin prior to v3.4.0, add `android.enableR8=true` to your `gradle.properties` file.
-
-You can enable additional optimizations by enabling R8's *Full Mode* in your `gradle.properties` file ([Learn More](https://android-developers.googleblog.com/2018/11/r8-new-code-shrinker-from-google-is.html)):
+R8 defaults to using ProGuard-compatible optimizations, but you can enable additional optimizations by enabling R8's *Full Mode* in your `gradle.properties` file ([Learn More](https://android-developers.googleblog.com/2018/11/r8-new-code-shrinker-from-google-is.html)):
 
 ```properties
 android.enableR8.fullMode=true
@@ -51,7 +61,7 @@ You can specify your own R8 rules in such a file.
 
 >**NOTE:** The Android Gradle Plugin will generate additional rules based on references to classes in your application's or library's manifest and resources.
 
-You can also configure product flavor specific rules using using `proguardFile`:
+You can also configure flavor specific rules using using `proguardFile`:
 
 ```gradle
 android {
