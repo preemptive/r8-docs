@@ -1,5 +1,10 @@
 ## Introduction
 
+This is *<small>un</small>official* documentation for [R8](https://www.preemptive.com/blog/article/1101-r8-a-step-in-google-s-android-build-performance-roadmap/89-DashO).
+Google intends R8 to be a drop-in replacement for ProGuard but there are some differences in what is supported and how it works.
+
+>**Note:** Known issues reflected in this document were last tested on R8 v1.4.77 using Android Gradle Plugin v3.4.0-rc03.
+
 ## Enabling R8
 
 You can enable ProGuard or R8 in your Android project for a build type by using the `minifyEnabled` setting in your application's or library's Gradle buildscript:
@@ -74,7 +79,95 @@ Minification and Obfuscation are configured by using the many  `-keep` based rul
 
 ## Renaming Configuration
 
-By using dictionaries and maps, it is possible to control, to a degree, how R8 will determine the new names for classes, methods, and fields.
+There are several rules which control the naming of classes, methods, and fields:
+
+| Rule                                  |  Description                         |
+|---------------------------------------|--------------------------------------|
+| `-dontobfuscate`                      | Don't rename any classes, methods, or fields. ([ProGuard docs](pg_man#dontobfuscate)) |
+| `-keeppackagenames {filter}`          | Don't rename packages which match the [filter](pg_man#filter). ([ProGuard docs](pg_man#keeppackagenames)) ([See issue](itg/130135768)) |
+| `-flattenpackagehierarchy {name}`     | When renaming a class, move the package containing the class to a common base package `{name}`. Using `-allowaccessmodification` increases the number of classes which can be moved to a new package. ([ProGuard docs](pg_man#flattenpackagehierarchy)) ([See note](#flat_repack_note)) |
+| `-repackageclasses {name}`            | When renaming a class, move it to package `{name}`. *(Overrides `-flattenpackagehierarchy`)*  Using `-allowaccessmodification` increases the number of classes which can be moved to a new package. ([ProGuard docs](pg_man#repackageclasses)) ([See note](#flat_repack_note)) |
+| `-overloadaggressively`               | Use the same name as much as possible, even if it may not be allowed by the source language. ([ProGuard docs](pg_man#overloadaggressively)) |
+| `-adaptclassstrings {filter}`         | Update strings containing classnames to use the new names. This can be [filtered](pg_man#filter) to only look for strings in certain classes. ([ProGuard docs](pg_man#adaptclassstrings)) |
+| `-adaptresourcefilenames {filter}`    | ... |
+| `-adaptresourcefilecontents {filter}` | ... |
+
+<a name="flat_repack_note"></a>
+#### Flatten vs. Repackage
+There is a subtle difference between `-flattenpackagehierarchy` and `-repackageclasses`.
+`-repackageclasses` moves the classes into a single package.
+`-flattenpackagehierarchy` renames the packages to be based on the name, keeping classes in their own package.
+
+Given three classes:
+
+* `com.example.packageOne.ClassOne`
+* `com.example.packageOne.subPackageOne.ClassTwo`
+* `com.example.packageTwo.ClassThree`
+
+`-repackageclasses "go.here"` will result in:
+
+```
+com.example.packageOne.ClassOne -> go.here.a:
+com.example.packageOne.subPackageOne.ClassTwo -> go.here.b:
+com.example.packageTwo.ClassThree -> go.here.c:
+```
+
+`-flattenpackagehierarchy "go.here"` will result in:
+
+```
+com.example.packageOne.ClassOne -> go.here.a.a:
+com.example.packageOne.subPackageOne.ClassTwo -> go.here.b.a:
+com.example.packageTwo.ClassThree -> go.here.c.a:
+```
+
+
+### Dictionaries
+
+R8 will provide new names by cycling through the English alphabet.
+By using dictionaries it is possible to control, to a degree, how R8 will determine the new names for classes, methods, and fields.
+
+| Rule                                       | Description                     |
+|--------------------------------------------|---------------------------------|
+| `-classobfuscationdictionary {filename}`   | Use the specified [file](#dict_file) to find new names for classes. ([ProGuard docs](pg_man#classobfuscationdictionary)) |
+| `-obfuscationdictionary {filename}`        | Use the specified [file](#dict_file) to find new names for methods and fields. ([ProGuard docs](pg_man#obfuscationdictionary)) |
+| `-packageobfuscationdictionary {filename}` | Use the specified [file](#dict_file) to find new names for packages. ([ProGuard docs](pg_man#packageobfuscationdictionary)) |
+
+<a name="dict_file"></a>
+
+#### Dictionary Files
+
+The dictionary files contain lists of unique names separated by whitespace or punctuation.
+A `#` can be used to specify a comment.
+The `{filename}` specified should be relative to the directory containing the rules file.
+The names must consist of characters allowed for Java identifiers.
+
+```
+a1, a2, a3 #A few identifiers
+class package for while do if else switch goto this null #Reserved word identifiers
+#Identifiers on their own lines
+q
+w
+e
+r
+t
+y
+```
+
+### Mapping Files
+
+Map files contain direct links between the original and new names of classes, methods, and fields.
+
+| Rule                       | Description                                     |
+|----------------------------|-------------------------------------------------|
+| `-applymapping {filename}` | Use the specified map for renaming. ([ProGuard docs](pg_man#applymapping)) ([See issue](itg/130132888)) |
+| `-printmapping {filename}` | Print a mapping from the original to the new names. ([ProGuard docs](pg_man#printmapping)) ([See note](#printmapping)) |
+
+<a name="printmapping"></a>
+
+#### -printmapping
+
+Regardless of the `-printmapping` rule, maps will always be output to a variant specific file (e.g.`build/outputs/mapping[/r8][/{flavorName}]/{buildType}/mapping.txt`).
+If `-printmapping` is in a configuration that is used by more that one variant, the configured file will be overwritten to reflect whichever variant built last.
 
 ## Unsupported Options
 
