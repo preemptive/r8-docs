@@ -69,6 +69,23 @@ android {
 }
 ```
 
+## General Options
+
+| Rule                                  | Description                          |
+|---------------------------------------|--------------------------------------|
+| `-allowaccessmodification`            | ([ProGuard docs](pg_man#allowaccessmodification)) |
+| `-assumenotsideeffects`               | ([ProGuard docs](pg_man#assumenotsideeffects)) |
+| `-dontobfuscate`                      | Do not apply (renaming) obfsucation, regardless of other configuration. ([ProGuard docs](pg_man#dontobfuscate)) |
+| `-dontoptimize`                       | ([ProGuard docs](pg_man#dontoptimize)) |
+| `-dontshrink`                         | Do not remove anything, regardless of other configuration. ([ProGuard docs](pg_man#dontshrink)) |
+| `-microedition`                       | ([ProGuard docs](pg_man#microedition)) |
+| `-printconfiguration`                 | ([ProGuard docs](pg_man#printconfiguration)) |
+| `-printseeds`                         | ([ProGuard docs](pg_man#printseeds)) |
+| `-printusage`                         | ([ProGuard docs](pg_man#printusage)) |
+| `-verbose`                            | ([ProGuard docs](pg_man#verbose)) |
+
+
+
 ## Minification and Obfuscation
 
 Minification and Obfuscation are configured by using the many  `-keep` based rules.
