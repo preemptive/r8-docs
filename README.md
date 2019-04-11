@@ -87,7 +87,7 @@ android {
 | Rule                                  | Description                          |
 |---------------------------------------|--------------------------------------|
 | `-allowaccessmodification`            | Allows R8 to change access modifiers, enabling additional optimizations and additional reorganizations to packages in which classes are contained. ([ProGuard docs](pg_man#allowaccessmodification)) |
-| `-assumenosideeffects <class-spec>`   | Informs R8 it can safely remove calls to the specified [method(s)](#classSpecTBD) during optimization. If the method returns a value that appears to be used, the call may not be removed. Note that this rule is ignored if `-dontoptimize` is also configured. ([ProGuard docs](pg_man#assumenosideeffects)) |
+| `-assumenosideeffects <class-spec>`   | Informs R8 it can safely remove calls to the specified [method(s)](#class_spec) during optimization. If the method returns a value that appears to be used, the call may not be removed. Note that this rule is ignored if `-dontoptimize` is also configured. ([ProGuard docs](pg_man#assumenosideeffects)) |
 | `-dontobfuscate`                      | Do not apply (renaming) obfsucation, regardless of other configuration. ([ProGuard docs](pg_man#dontobfuscate)) |
 | `-dontoptimize`                       | Do not optimize the code, regardless of other configuration. This is part of the [default](#rules_note) configuration. ([ProGuard docs](pg_man#dontoptimize)) |
 | `-dontshrink`                         | Do not remove any classes, methods, or fields, regardless of other configuration. ([ProGuard docs](pg_man#dontshrink)) |
@@ -103,22 +103,18 @@ Minification and Obfuscation are configured by using the many `-keep` based rule
 
 | Option (and Arguments)                                     | Description                                                                                                    |
 |------------------------------------------------------------|------------------------------------------------------------------------|
-| `-dontobfuscate`                                           | Do not apply (renaming) obfsucation, regardless of other configuration |
-| `-dontshrink`                                              | Do not remove anything, regardless of other configuration |
-| `-keepattributes <pattern>[,<pattern>]`                    | Do not remove attributes (? not annotations?) matching (or not matching if `!` is used) the specified patterns (?) |
-| `-keepparameternames`                                      | Maintain record of the parameter names in the LocalVariableTable attributes (?) |
 | `-keepdirectories [<path-filter>[,...]]`                   | ... |
-| `-include <filename>`                                      | Include configuration from file with filename `filename`. |
+| `-include <filename>`                                      | Include configuration from file with filename `filename`. ([ProGuard docs](pg_man#at)) |
 | `-checkdiscard <class-spec>`                               | ... |
 | `-keepconstantarguments <class-spec>`                      | ... |
 | `-keepunusedarguments <class-spec>`                        | ... |
-| `-keep[,modifier[...]] <class-spec>`                       | Exclude matching classes from shrinking, optimization, and obfuscation. Prevents the class from being shrunk so members will not be removed, but does not prevent members from being renamed. Specifying members in the `class-spec` has no effect. |
-| `-keepclassmembers[,modifier[...]] <class-spec>`           | Exclude matching members in matching classes from shrinking, optimization, and obfuscation |
-| `-keepclasseswithmembers[,modifier[...]] <class-spec>`     | Exclude matching classes and matching members from shrinking, optimization, and obfuscation that have all of the specified members. |
-| `-keepnames[,modifier[...]] <class-spec>`                  | Prevent matching classes from being renamed. Specifying members in the `class-spec` has no effect. |
-| `-keepclassmembernames[,modifier[...]] <class-spec>`       | Prevent any matching members from being renamed in matching classes. |
-| `-keepclasseswithmembernames[,modifier[...]] <class-spec>` | Prevent matching classes and matching members from being renamed if they contain all of the specified members. This does not prevent matching members from being removed by shrinking. |
-| `-whyareyoukeeping <class-spec>`                           | Log details about why particular classes and members were maintained in the output |
+| `-keep[,modifier[...]] <class-spec>`                       | Exclude matching classes from shrinking, optimization, and obfuscation. Prevents the class from being shrunk so members will not be removed, but does not prevent members from being renamed. Specifying members in the `class-spec` has no effect. ([ProGuard docs](pg_man#keep)) |
+| `-keepclassmembers[,modifier[...]] <class-spec>`           | Exclude matching members in matching classes from shrinking, optimization, and obfuscation ([ProGuard docs](pg_man#keepclassmembers)) |
+| `-keepclasseswithmembers[,modifier[...]] <class-spec>`     | Exclude matching classes and matching members from shrinking, optimization, and obfuscation that have all of the specified members. ([ProGuard docs](pg_man#keepclasseswithmembers)) |
+| `-keepnames[,modifier[...]] <class-spec>`                  | Prevent matching classes from being renamed. Specifying members in the `class-spec` has no effect. ([ProGuard docs](pg_man#keepnames)) |
+| `-keepclassmembernames[,modifier[...]] <class-spec>`       | Prevent any matching members from being renamed in matching classes. ([ProGuard docs](pg_man#keepclassmembernames)) |
+| `-keepclasseswithmembernames[,modifier[...]] <class-spec>` | Prevent matching classes and matching members from being renamed if they contain all of the specified members. This does not prevent matching members from being removed by shrinking. ([ProGuard docs](pg_man#keepclasseswithmembernames)) |
+| `-whyareyoukeeping <class-spec>`                           | Log details about why particular classes and members were maintained in the output. ([ProGuard docs](pg_man#whyareyoukeeping)) |
 
 Keep rule modifiers:
 
@@ -129,6 +125,7 @@ Keep rule modifiers:
 | `allowobfuscation`         | Allow the target(s) of the rule to be obfuscated (renamed). Adding this modifier to one of the `-keep*names` causes the configuration to have no effect. |
 | `includedescriptorclasses` | ... |
 
+<a name="class_spec"></a>
 ### Class Specification
 
 Several of the options accept a class specification (`class-spec`) which is a specification of classes and members that has a Java-like syntax. For example:
