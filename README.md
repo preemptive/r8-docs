@@ -74,18 +74,17 @@ android {
 | Rule                                  | Description                          |
 |---------------------------------------|--------------------------------------|
 | `-allowaccessmodification`            | ([ProGuard docs](pg_man#allowaccessmodification)) |
-| `-assumenotsideeffects`               | ([ProGuard docs](pg_man#assumenotsideeffects)) |
+| `-assumenosideeffects <class-spec>`   | Informs R8 it can safely remove calls to the specified [method(s)](#classSpecTBD) during optimization (if performed). If the method returns a value that appears to be used, the call may not be removed. ([ProGuard docs](pg_man#assumenosideeffects)) |
 | `-dontobfuscate`                      | Do not apply (renaming) obfsucation, regardless of other configuration. ([ProGuard docs](pg_man#dontobfuscate)) |
-| `-dontoptimize`                       | ([ProGuard docs](pg_man#dontoptimize)) |
-| `-dontshrink`                         | Do not remove anything, regardless of other configuration. ([ProGuard docs](pg_man#dontshrink)) |
+| `-dontoptimize`                       | Do not optimize the code, regardless of other configuration. This is part of the default configuration. ([ProGuard docs](pg_man#dontoptimize)) |
+| `-dontshrink`                         | Do not remove any classes, methods, or fields, regardless of other configuration. ([ProGuard docs](pg_man#dontshrink)) |
 | `-microedition`                       | ([ProGuard docs](pg_man#microedition)) |
 | `-printconfiguration`                 | ([ProGuard docs](pg_man#printconfiguration)) |
-| `-printseeds`                         | ([ProGuard docs](pg_man#printseeds)) |
-| `-printusage`                         | ([ProGuard docs](pg_man#printusage)) |
+| `-printseeds [{filename}]`            | Outputs a list of the classes, methods, and fields which match the [keep rules](#minification) to the specified file, or to stdout if there is no file specified. Note that if you specify a file, every build of any variant using this rule will overwrite that file. Note that unlike ProGuard, R8 will **not** automatically output a build/outputs/mapping[/{flavorName}]/{buildType}/seeds.txt file. ([ProGuard docs](pg_man#printseeds)) |
+| `-printusage [{filename}]`            | Outputs a list of the classes, methods, and fields which were removed during [minification](#minification) to the specified file, or to stdout if there is no file specified. Note that if you specify a file, every build of any variant using this rule will overwrite that file. Note that unlike ProGuard, R8 will **not** automatically output a build/outputs/mapping[/{flavorName}]/{buildType}/usage.txt file. ([ProGuard docs](pg_man#printusage)) |
 | `-verbose`                            | ([ProGuard docs](pg_man#verbose)) |
 
-
-
+<a name="minification"></a>
 ## Minification and Obfuscation
 
 Minification and Obfuscation are configured by using the many  `-keep` based rules.
