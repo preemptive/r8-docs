@@ -76,7 +76,7 @@ android {
 | Rule                                  | Description                          |
 |---------------------------------------|--------------------------------------|
 | `-allowaccessmodification`            | ([ProGuard docs](pg_man#allowaccessmodification)) |
-| `-assumenosideeffects <class-spec>`   | Informs R8 it can safely remove calls to the specified [method(s)](#classSpecTBD) during optimization (if performed). If the method returns a value that appears to be used, the call may not be removed. ([ProGuard docs](pg_man#assumenosideeffects)) |
+| `-assumenosideeffects <class-spec>`   | Informs R8 it can safely remove calls to the specified [method(s)](#classSpecTBD) during optimization. If the method returns a value that appears to be used, the call may not be removed. Note that this rule is ignored if `-dontoptimize` is also configured. ([ProGuard docs](pg_man#assumenosideeffects)) |
 | `-dontobfuscate`                      | Do not apply (renaming) obfsucation, regardless of other configuration. ([ProGuard docs](pg_man#dontobfuscate)) |
 | `-dontoptimize`                       | Do not optimize the code, regardless of other configuration. This is part of the [default](#rules_note) configuration. ([ProGuard docs](pg_man#dontoptimize)) |
 | `-dontshrink`                         | Do not remove any classes, methods, or fields, regardless of other configuration. ([ProGuard docs](pg_man#dontshrink)) |
