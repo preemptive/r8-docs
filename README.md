@@ -85,16 +85,15 @@ android {
 
 | Rule                                  | Description                          |
 |---------------------------------------|--------------------------------------|
-| `-allowaccessmodification`            | ([ProGuard docs](pg_man#allowaccessmodification)) |
+| `-allowaccessmodification`            | Allows R8 to change access modifiers, enabling additional optimizations and additional reorganizations to packages in which classes are contained. ([ProGuard docs](pg_man#allowaccessmodification)) |
 | `-assumenosideeffects <class-spec>`   | Informs R8 it can safely remove calls to the specified [method(s)](#classSpecTBD) during optimization. If the method returns a value that appears to be used, the call may not be removed. Note that this rule is ignored if `-dontoptimize` is also configured. ([ProGuard docs](pg_man#assumenosideeffects)) |
 | `-dontobfuscate`                      | Do not apply (renaming) obfsucation, regardless of other configuration. ([ProGuard docs](pg_man#dontobfuscate)) |
 | `-dontoptimize`                       | Do not optimize the code, regardless of other configuration. This is part of the [default](#rules_note) configuration. ([ProGuard docs](pg_man#dontoptimize)) |
 | `-dontshrink`                         | Do not remove any classes, methods, or fields, regardless of other configuration. ([ProGuard docs](pg_man#dontshrink)) |
-| `-microedition`                       | ([ProGuard docs](pg_man#microedition)) |
-| `-printconfiguration`                 | ([ProGuard docs](pg_man#printconfiguration)) |
-| `-printseeds [{filename}]`            | Outputs a list of the classes, methods, and fields which match the [keep rules](#minification) to the specified file, or to stdout if there is no file specified. Note that if you specify a file, every build of any variant using this rule will overwrite that file. Note that unlike ProGuard, R8 will **not** automatically output a build/outputs/mapping[/{flavorName}]/{buildType}/seeds.txt file. ([ProGuard docs](pg_man#printseeds)) |
-| `-printusage [{filename}]`            | Outputs a list of the classes, methods, and fields which were removed during [minification](#minification) to the specified file, or to stdout if there is no file specified. Note that if you specify a file, every build of any variant using this rule will overwrite that file. Note that unlike ProGuard, R8 will **not** automatically output a build/outputs/mapping[/{flavorName}]/{buildType}/usage.txt file. ([ProGuard docs](pg_man#printusage)) |
-| `-verbose`                            | ([ProGuard docs](pg_man#verbose)) |
+| `-keepattributes [filter]`            | Allows you to specify supported Java [attributes](pg_man/attributes) for R8 to retain in the code. Unlike ProGuard, R8 does not respect rules regarding `Synthetic`, `Deprecated`, or `MethodParameters` and will remove these attributes regardless of what is configured in `-keepattributes`. Also, for class version 50 (Java 6), R8 will keep a `StackMapTable` attribute only if `StackMapTable` is covered by `-keepattributes`; it is always kept for later class versions. ([ProGuard docs](pg_man#keepattributes))|
+| `-printconfiguration [file]`          | Outputs the used configuration rules to the specified file, or to stdout if there is no file specified. Note that if you specify a file, every build of a variant using this rule will overwrite that file. ([ProGuard docs](pg_man#printconfiguration)) |
+| `-printseeds [{filename}]`            | Outputs a list of the classes, methods, and fields which match the [keep rules](#minification) to the specified file, or to stdout if there is no file specified. Note that if you specify a file, every build of a variant using this rule will overwrite that file. Note that unlike ProGuard, R8 will **not** automatically output a build/outputs/mapping[/{flavorName}]/{buildType}/seeds.txt file. ([ProGuard docs](pg_man#printseeds)) |
+| `-printusage [{filename}]`            | Outputs a list of the classes, methods, and fields which were removed during [minification](#minification) to the specified file, or to stdout if there is no file specified. Note that if you specify a file, every build of a variant using this rule will overwrite that file. Note that unlike ProGuard, R8 will **not** automatically output a build/outputs/mapping[/{flavorName}]/{buildType}/usage.txt file. ([ProGuard docs](pg_man#printusage)) |
 
 <a name="minification"></a>
 ## Minification and Obfuscation
@@ -201,8 +200,9 @@ If `-printmapping` is in a configuration that is used by more that one variant, 
 
 Some ProGuard options are unsupported by R8 and will not be honored.
 
-The following setting will cause R8 to issue an error:
+The following settings will cause R8 to issue an error:
 
+* `-microedition`
 * `-skipnonpubliclibraryclasses`
 
 The following settings will cause R8 to issue a warning message:
@@ -228,3 +228,4 @@ The following settings are ignored:
 * `-outjars`
 * `-target`
 * `-useuniqueclassmembernames`
+* `-verbose`
