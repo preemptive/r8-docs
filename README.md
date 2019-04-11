@@ -99,93 +99,79 @@ android {
 <a name="minification"></a>
 ## Minification and Obfuscation
 
-Minification and Obfuscation are configured by using the many  `-keep` based rules.
+Minification and Obfuscation are configured by using the many `-keep` based rules.
 
-| Option (and Arguments)                                      | Description                                                                                                    |
-|------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
-| `-dontobfuscate`                                            | Do not apply (renaming) obfsucation, regardless of other configuration |
-| `-dontshrink`                                               | Do not remove anything, regardless of other configuration |
-| `-keepattributes <pattern>[,<pattern>]`                     | Do not remove attributes (? not annotations?) matching (or not matching if `!` is used) the specified patterns (?) |
-| `-keepparameternames`                                       | Maintain record of the parameter names in the LocalVariableTable attributes (?) |
-| `-keepdirectories [<path-filter>[,...]]`                    | Keep directories in the output (?) |
-| `-include <filename>`                                       | Include configuration from file with filename `filename` (?) |
-
-
-| `-checkdiscard <class-spec>`                                  | Check why something was discarded? (?) |
-| `-keepconstantarguments <class-spec>`                         | Keep constant arguments (?) |
-| `-keepunusedarguments <class-spec>`                           | Keep unused arguments (?) |
-
-| `-keep[,modifier[...]] <class-spec>`                          | Exclude class(es) from shrinking, optimization, and obfuscation. For example, the class name will not change, but member names could change. Specifying members in the `class-spec` has no effect. |
-
-| `-keepclassmembers[,modifier[...]] <class-spec>`              | Exclude members from shrinking, optimization, and obfuscation |
-| `-keepclasseswithmembers[,modifier[...]] <class-spec>`        | Exclude classes from shrinking, optimization, and obfuscation that have the specified members |
-| `-keepnames[,modifier[...]] <class-spec>`                     | Exclude class from obfuscation |
-| `-keepclassmembernames[,modifier[...]] <class-spec>`          | Exclude members from obfuscation |
-| `-keepclasseswithmembernames[,modifier[...]] <class-spec>`    | Exclude classes from obfuscation that have the specified members |
-| `-whyareyoukeeping <class-spec>`                              | Log details about why particular classes and members were maintained in the output |
-
+| Option (and Arguments)                                     | Description                                                                                                    |
+|------------------------------------------------------------|------------------------------------------------------------------------|
+| `-dontobfuscate`                                           | Do not apply (renaming) obfsucation, regardless of other configuration |
+| `-dontshrink`                                              | Do not remove anything, regardless of other configuration |
+| `-keepattributes <pattern>[,<pattern>]`                    | Do not remove attributes (? not annotations?) matching (or not matching if `!` is used) the specified patterns (?) |
+| `-keepparameternames`                                      | Maintain record of the parameter names in the LocalVariableTable attributes (?) |
+| `-keepdirectories [<path-filter>[,...]]`                   | ... |
+| `-include <filename>`                                      | Include configuration from file with filename `filename`. |
+| `-checkdiscard <class-spec>`                               | ... |
+| `-keepconstantarguments <class-spec>`                      | ... |
+| `-keepunusedarguments <class-spec>`                        | ... |
+| `-keep[,modifier[...]] <class-spec>`                       | Exclude matching classes from shrinking, optimization, and obfuscation. Prevents the class from being shrunk so members will not be removed, but does not prevent members from being renamed. Specifying members in the `class-spec` has no effect. |
+| `-keepclassmembers[,modifier[...]] <class-spec>`           | Exclude matching members in matching classes from shrinking, optimization, and obfuscation |
+| `-keepclasseswithmembers[,modifier[...]] <class-spec>`     | Exclude matching classes and matching members from shrinking, optimization, and obfuscation that have all of the specified members. |
+| `-keepnames[,modifier[...]] <class-spec>`                  | Prevent matching classes from being renamed. Specifying members in the `class-spec` has no effect. |
+| `-keepclassmembernames[,modifier[...]] <class-spec>`       | Prevent any matching members from being renamed in matching classes. |
+| `-keepclasseswithmembernames[,modifier[...]] <class-spec>` | Prevent matching classes and matching members from being renamed if they contain all of the specified members. This does not prevent matching members from being removed by shrinking. |
+| `-whyareyoukeeping <class-spec>`                           | Log details about why particular classes and members were maintained in the output |
 
 Keep rule modifiers:
 
 | Modifier                   | Effect                                                      |
 |----------------------------|-------------------------------------------------------------|
 | `allowshrinking`           | Allow the target(s) of the rule to be removed by shrinking. |
-| `allowoptimization`        | Allow the target(s) of the rule to be optimized(?) |
+| `allowoptimization`        | ... |
 | `allowobfuscation`         | Allow the target(s) of the rule to be obfuscated (renamed). Adding this modifier to one of the `-keep*names` causes the configuration to have no effect. |
-| `includedescriptorclasses` | Include descriptor classes (?) |
+| `includedescriptorclasses` | ... |
 
-In the class-spec, R8 supports `* *;` to represent fields of any type and any name, but this same construction is not supported by ProGuard. `<fields>;` works in either. Similarly for `* *(...);` for methods: this works in R8, but not in ProGuard.
+### Class Specification
 
-```bnf
-pattern-list: pattern [ , pattern-list ]
-pattern: pattern pattern-char
-pattern-char: `!` | `*` | dex-identifier-character
-dex-identifier-character: `A`..`Z` | `a`..`z` | `0`..`9` | `$` | `-` | `_`
-    | 0x00a1..0x1fff | 0x2010..0x2027 | 0x2030..0xd7ff | 0xe000..0xffef | 0x10000..0x10ffff
-path-filter: one-path-filter [ , path-filter ]
-one-path-filter: negation path
-negation: ! |
-path: path-character path
-path-character: not , or whitespace
-class-spec: class-flags-and-annotations class-type class-names inheritance member-rules
-class-flags-and-annotations: flag-or-annotation class-flags-and-annotations
-flag-or-annotation: ! | annotation | flag
-flag: public | final | abstract
-annotation: `@` identifier 
-identifier: `'` identifier-with-wildcards-and-back-references `'`
-    | `"` identifier-with-wildcards-and-back-references `"`
-    | identifier-with-wildcards-and-back-references
-identifier-with-wildcards-and-back-references: character-or-back-reference identifier-with-wildcards-and-back-references
-character-or-back-reference: character | `<` reference `>`
-character: dex-identifier-character | . | * | ? | % | [ | ] | >
-reference: `0`..`9` [ reference ]
-class-type: class-type-literal | `!` class-type-literal
-class-type-literal: @interface | interface | class | enum
-class-names: class-name [, class-names]
-class-name: class-name-literal | `!` class-name-literal
-class-name-literal: identifier-with-wildcards-and-back-references
-inheritance: inheritance-type [ `@` class-name-literal ] class-name-literal
-inheritance-type: implements | extends
-member-rules: `{` member-rule-list `}`
-member-rule-list: member-rule [ member-rule-list ]
-member-rule: annotation member-access-flags member `;`
-member-access-flags: member-access-flag [ member-access-flags]
-member-access-flag: [`!`] member-access-flag-literal
-member-access-flag-literal: abstract | bridge | final | native | public | private | protected | synchronized | static | strictfp | synthetic | transient | volatile
-member: `<methods>` // works for whyareyoukeeping
-    | `<fields>` // works for whyareyoukeeping
-    | `<init>` argument-list
-    | identifier argument-list            // constructor
-    | identifier identifier argument-list [return-spec] // method
-    | identifier identifier [return-spec] // field
-return-spec: `return` return-value
-return-value: true | false | null | field-reference | value-spec
-value-spec: integer | integer `..` integer // only valid if integer specification is allowed in context
-argument-list: `(` argument-list-body `)`
-argument-list-body:  | `...` | list-of-arguments
-list-of-arguments: class-name-literal [`,` list-of-arguments]
+Several of the options accept a class specification (`class-spec`) which is a specification of classes and members that has a Java-like syntax. For example:
+
+```
+-keepclassmembernames class some.path.to.MyClass {
+    int intField;
+    android.content.Context getApplicationContext();
+}
 ```
 
+The syntax has strong support for filtering classes, methods, and fields. The syntax supports `class`, `interface`, `enum`, and `@interface` to represent classes, interfaces, enums, and annotations, respectively.
+
+The syntax also supports wildcards and negation using special characters:
+
+* `!` negates the condition described by the following specification.
+* `*` a sequence of zero or more characters
+* `**` ...
+* `***` ...
+* `?` any one character
+* `%` ...
+* `<non-zero-integer>` backward reference ...
+
+For example:
+
+```
+-keepclassmembernames class * { long *UUID; } # don't rename any long-valued fields ending with UUID
+```
+
+There are two powerful constructs that can be used with class filtering: subtype matching and annotated matching.
+
+Specify either `extends <type-name>` or `implements <interface-name>` to match types that either extend or implement another type. For example, `-keep class * implements some.particular.SpecialInterface` will match all classes that implement `SpecialInterface`.
+
+Specify an annotation on the type filter to indicate that only types that are annoted with that annotation should match the filter. For example, `-keep @some.package.SomeAnnotation interface *` will match all interfaces that are annotated with `@SomeAnnotation`.
+
+Several other useful constructs recognized in the class specificiation:
+
+* `<fields>;` is a special string representing all fields
+* `<methods>;` is a special string representing all methods
+
+It isn't clear to me how negation works in all of the various places that it is accepted by the parser.
+
+>**NOTE:** There are some differences between how the filter syntax is interpreted by R8 and ProGuard. For example, `*;` represents all fields and methods in both, but only R8 recognizes `* *;` and `* *(...);` as alternative representations for all fields and all methods, respectively.
 
 ## Renaming Configuration
 
