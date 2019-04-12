@@ -91,6 +91,7 @@ android {
 | `-dontobfuscate`                      | Do not apply (renaming) obfsucation, regardless of other configuration. ([ProGuard docs](pg_man#dontobfuscate)) |
 | `-dontoptimize`                       | Do not optimize the code, regardless of other configuration. This is part of the [default](#rules_note) configuration. ([ProGuard docs](pg_man#dontoptimize)) |
 | `-dontshrink`                         | Do not remove any classes, methods, or fields, regardless of other configuration. ([ProGuard docs](pg_man#dontshrink)) |
+| `-include <filename>`                 | Include configuration from file with filename `filename`. ([ProGuard docs](pg_man#at)) |
 | `-keepattributes [filter]`            | Allows you to specify supported Java [attributes](pg_man/attributes) for R8 to retain in the code. Unlike ProGuard, R8 does not respect rules regarding `Synthetic`, `Deprecated`, or `MethodParameters` and will remove these attributes regardless of what is configured in `-keepattributes`. Also, for class version 50 (Java 6), R8 will keep a `StackMapTable` attribute only if `StackMapTable` is covered by `-keepattributes`; it is always kept for later class versions. ([ProGuard docs](pg_man#keepattributes)) ([See issue](itg/130421335))|
 | `-printconfiguration [file]`          | Outputs the used configuration rules to the specified file, or to stdout if there is no file specified. Note that if you specify a file, every build of a variant using this rule will overwrite that file. ([ProGuard docs](pg_man#printconfiguration)) |
 | `-printseeds [{filename}]`            | Outputs a list of the classes, methods, and fields which match the [keep rules](#minification) to the specified file, or to stdout if there is no file specified. Note that if you specify a file, every build of a variant using this rule will overwrite that file. Note that unlike ProGuard, R8 will **not** automatically output a build/outputs/mapping[/{flavorName}]/{buildType}/seeds.txt file. ([ProGuard docs](pg_man#printseeds)) |
@@ -103,18 +104,17 @@ Minification and Obfuscation are configured by using the many `-keep` based rule
 
 | Option (and Arguments)                                     | Description                                                                                                    |
 |------------------------------------------------------------|------------------------------------------------------------------------|
+| `-keep[,modifier[...]] <class-spec>`                       | Exclude matching classes from shrinking, optimization, and obfuscation. Shrinking exclusion applies to the class, and this means that members will not be removed, but does not prevent members from being renamed. Specifying members in the class specification has no effect. ([ProGuard docs](pg_man#keep)) |
+| `-keepclassmembers[,modifier[...]] <class-spec>`           | Exclude matching members in matching classes from shrinking, optimization, and obfuscation. ([ProGuard docs](pg_man#keepclassmembers)) |
+| `-keepclasseswithmembers[,modifier[...]] <class-spec>`     | Exclude matching classes and matching members from shrinking, optimization, and obfuscation if the corresponding class has all of the specified members. ([ProGuard docs](pg_man#keepclasseswithmembers)) |
+| `-keepnames[,modifier[...]] <class-spec>`                  | Prevent matching classes from being renamed. Specifying members in the class specification has no effect. ([ProGuard docs](pg_man#keepnames)) |
+| `-keepclassmembernames[,modifier[...]] <class-spec>`       | Prevent any matching members from being renamed in matching classes. ([ProGuard docs](pg_man#keepclassmembernames)) |
+| `-keepclasseswithmembernames[,modifier[...]] <class-spec>` | Prevent matching classes and matching members from being renamed if the corresponding class contains all of the specified members. This does not prevent matching members from being removed by shrinking. ([ProGuard docs](pg_man#keepclasseswithmembernames)) |
+| `-whyareyoukeeping <class-spec>`                           | Log details about why particular classes and members were maintained in the output. ([ProGuard docs](pg_man#whyareyoukeeping)) |
 | `-keepdirectories [<path-filter>[,...]]`                   | ... |
-| `-include <filename>`                                      | Include configuration from file with filename `filename`. ([ProGuard docs](pg_man#at)) |
 | `-checkdiscard <class-spec>`                               | ... |
 | `-keepconstantarguments <class-spec>`                      | ... |
 | `-keepunusedarguments <class-spec>`                        | ... |
-| `-keep[,modifier[...]] <class-spec>`                       | Exclude matching classes from shrinking, optimization, and obfuscation. Prevents the class from being shrunk so members will not be removed, but does not prevent members from being renamed. Specifying members in the `class-spec` has no effect. ([ProGuard docs](pg_man#keep)) |
-| `-keepclassmembers[,modifier[...]] <class-spec>`           | Exclude matching members in matching classes from shrinking, optimization, and obfuscation ([ProGuard docs](pg_man#keepclassmembers)) |
-| `-keepclasseswithmembers[,modifier[...]] <class-spec>`     | Exclude matching classes and matching members from shrinking, optimization, and obfuscation that have all of the specified members. ([ProGuard docs](pg_man#keepclasseswithmembers)) |
-| `-keepnames[,modifier[...]] <class-spec>`                  | Prevent matching classes from being renamed. Specifying members in the `class-spec` has no effect. ([ProGuard docs](pg_man#keepnames)) |
-| `-keepclassmembernames[,modifier[...]] <class-spec>`       | Prevent any matching members from being renamed in matching classes. ([ProGuard docs](pg_man#keepclassmembernames)) |
-| `-keepclasseswithmembernames[,modifier[...]] <class-spec>` | Prevent matching classes and matching members from being renamed if they contain all of the specified members. This does not prevent matching members from being removed by shrinking. ([ProGuard docs](pg_man#keepclasseswithmembernames)) |
-| `-whyareyoukeeping <class-spec>`                           | Log details about why particular classes and members were maintained in the output. ([ProGuard docs](pg_man#whyareyoukeeping)) |
 
 Keep rule modifiers:
 
@@ -122,13 +122,14 @@ Keep rule modifiers:
 |----------------------------|-------------------------------------------------------------|
 | `allowshrinking`           | Allow the target(s) of the rule to be removed by shrinking. |
 | `allowoptimization`        | ... |
-| `allowobfuscation`         | Allow the target(s) of the rule to be obfuscated (renamed). Adding this modifier to one of the `-keep*names` causes the configuration to have no effect. |
+| `allowobfuscation`         | Allow the target(s) of the rule to be obfuscated (renamed). Adding this modifier to one of the `-keep*names` options causes that option to have no effect. |
 | `includedescriptorclasses` | ... |
 
 <a name="class_spec"></a>
 ### Class Specification
 
-Several of the options accept a class specification (`class-spec`) which is a specification of classes and members that has a Java-like syntax. For example:
+Several of the options accept a class specification (`class-spec`) which is a specification of classes and members that has a Java-like syntax.
+For example:
 
 ```
 -keepclassmembernames class some.path.to.MyClass {
@@ -137,7 +138,8 @@ Several of the options accept a class specification (`class-spec`) which is a sp
 }
 ```
 
-The syntax has strong support for filtering classes, methods, and fields. The syntax supports `class`, `interface`, `enum`, and `@interface` to represent classes, interfaces, enums, and annotations, respectively.
+The syntax has strong support for filtering classes, methods, and fields.
+The syntax supports `class`, `interface`, `enum`, and `@interface` to represent classes, interfaces, enums, and annotations, respectively.
 
 The syntax also supports wildcards and negation using special characters:
 
@@ -157,9 +159,12 @@ For example:
 
 There are two powerful constructs that can be used with class filtering: subtype matching and annotated matching.
 
-Specify either `extends <type-name>` or `implements <interface-name>` to match types that either extend or implement another type. For example, `-keep class * implements some.particular.SpecialInterface` will match all classes that implement `SpecialInterface`.
+Specify either `extends <type-name>` or `implements <interface-name>` to match types that either extend or implement another type.
+For example, `-keep class * implements some.particular.SpecialInterface` will match all classes that implement `SpecialInterface`.
+`extends` and `implements` can be used interchangeably.
 
-Specify an annotation on the type filter to indicate that only types that are annoted with that annotation should match the filter. For example, `-keep @some.package.SomeAnnotation interface *` will match all interfaces that are annotated with `@SomeAnnotation`.
+Specify an annotation on the type filter to indicate that only types that are annoted with that annotation should match the filter.
+For example, `-keep @some.package.SomeAnnotation interface *` will match all interfaces that are annotated with `@SomeAnnotation`.
 
 Several other useful constructs recognized in the class specificiation:
 
@@ -168,7 +173,8 @@ Several other useful constructs recognized in the class specificiation:
 
 It isn't clear to me how negation works in all of the various places that it is accepted by the parser.
 
->**NOTE:** There are some differences between how the filter syntax is interpreted by R8 and ProGuard. For example, `*;` represents all fields and methods in both, but only R8 recognizes `* *;` and `* *(...);` as alternative representations for all fields and all methods, respectively.
+>**NOTE:** There are some differences between how the filter syntax is interpreted by R8 and ProGuard.
+> For example, `*;` represents all fields and methods in both, but only R8 recognizes `* *;` and `* *(...);` as alternative representations for all fields and all methods, respectively.
 
 ## Renaming Configuration
 
