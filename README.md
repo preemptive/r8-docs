@@ -100,7 +100,8 @@ android {
 <a name="minification"></a>
 ## Minification and Obfuscation
 
-Minification and Obfuscation are configured by using the many `-keep` based rules.
+Minification and Obfuscation are configured by using the `-keep` options.
+These options are configured by proving a [class specification](#class_spec).
 
 | Option (and Arguments)                                     | Description                                                                                                    |
 |------------------------------------------------------------|------------------------------------------------------------------------|
@@ -109,14 +110,15 @@ Minification and Obfuscation are configured by using the many `-keep` based rule
 | `-keepclasseswithmembers[,modifier[...]] <class-spec>`     | Exclude matching classes and matching members from shrinking, optimization, and obfuscation if the corresponding class has all of the specified members. ([ProGuard docs](pg_man#keepclasseswithmembers)) |
 | `-keepnames[,modifier[...]] <class-spec>`                  | Prevent matching classes from being renamed. Specifying members in the class specification has no effect. ([ProGuard docs](pg_man#keepnames)) |
 | `-keepclassmembernames[,modifier[...]] <class-spec>`       | Prevent any matching members from being renamed in matching classes. ([ProGuard docs](pg_man#keepclassmembernames)) |
-| `-keepclasseswithmembernames[,modifier[...]] <class-spec>` | Prevent matching classes and matching members from being renamed if the corresponding class contains all of the specified members. This does not prevent matching members from being removed by shrinking. ([ProGuard docs](pg_man#keepclasseswithmembernames)) |
+| `-keepclasseswithmembernames[,modifier[...]] <class-spec>` | Prevent matching classes and matching members from being renamed if the corresponding class contains all of the specified members. This does not prevent matching members from being removed by shrinking (ProGuard would also prevent the specified members from being removed). ([ProGuard docs](pg_man#keepclasseswithmembernames)) |
 | `-whyareyoukeeping <class-spec>`                           | Log details about why particular classes and members were maintained in the output. ([ProGuard docs](pg_man#whyareyoukeeping)) |
+| `-if <class-spec> <one-keep-option>`                           | Conditionally apply one keep option. If class members are specified, the class and all specified members must match. Otherwise, only the class need match. Class specification in the keep option can contain back references to wildcards in the `-if` class specification. |
 | `-keepdirectories [<path-filter>[,...]]`                   | ... |
 | `-checkdiscard <class-spec>`                               | ... |
 | `-keepconstantarguments <class-spec>`                      | ... |
 | `-keepunusedarguments <class-spec>`                        | ... |
 
-Keep rule modifiers:
+Keep option modifiers:
 
 | Modifier                   | Effect                                                      |
 |----------------------------|-------------------------------------------------------------|
@@ -143,19 +145,21 @@ The syntax supports `class`, `interface`, `enum`, and `@interface` to represent 
 
 The syntax also supports wildcards and negation using special characters:
 
-* `!` negates the condition described by the following specification.
+* `!` negates the condition described by the subsequent specification
 * `*` a sequence of zero or more characters
 * `**` ...
 * `***` ...
 * `?` any one character
 * `%` ...
-* `<non-zero-integer>` backward reference ...
+* `<integer>` integer (starting at 1) referencing the value that matched a wildcard used earlier in the specification, available in `-if`-predicated `-keep*` options
 
 For example:
 
 ```
 -keepclassmembernames class * { long *UUID; } # don't rename any long-valued fields ending with UUID
 ```
+
+Note that R8 does not currently respect negation (`!`) of class member expressions in `-if` class specifications.
 
 There are two powerful constructs that can be used with class filtering: subtype matching and annotated matching.
 
