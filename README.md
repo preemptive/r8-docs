@@ -112,11 +112,8 @@ These options are configured by proving a [class specification](#class_spec).
 | `-keepclassmembernames[,modifier[...]] <class-spec>`       | Prevent any matching members from being renamed in matching classes. ([ProGuard docs](pg_man#keepclassmembernames)) |
 | `-keepclasseswithmembernames[,modifier[...]] <class-spec>` | Prevent matching classes and matching members from being renamed if the corresponding class contains all of the specified members. This does not prevent matching members from being removed by shrinking (ProGuard would also prevent the specified members from being removed). ([ProGuard docs](pg_man#keepclasseswithmembernames)) |
 | `-whyareyoukeeping <class-spec>`                           | Log details about why particular classes and members were maintained in the output. ([ProGuard docs](pg_man#whyareyoukeeping)) |
-| `-if <class-spec> <one-keep-option>`                           | Conditionally apply one keep option. If class members are specified, the class and all specified members must match. Otherwise, only the class need match. Class specification in the keep option can contain back references to wildcards in the `-if` class specification. |
+| `-if <class-spec> <one-keep-option>`                           | Conditionally apply one keep option. If class members are specified, the class and all specified members must match. Otherwise, only the class need match. Class specification in the keep option can contain back references to wildcards in the `-if` class specification. ([ProGuard docs](pg_man#if)) |
 | `-keepdirectories [<path-filter>[,...]]`                   | ... |
-| `-checkdiscard <class-spec>`                               | ... |
-| `-keepconstantarguments <class-spec>`                      | ... |
-| `-keepunusedarguments <class-spec>`                        | ... |
 
 Keep option modifiers:
 
@@ -143,15 +140,19 @@ For example:
 The syntax has strong support for filtering classes, methods, and fields.
 The syntax supports `class`, `interface`, `enum`, and `@interface` to represent classes, interfaces, enums, and annotations, respectively.
 
-The syntax also supports wildcards and negation using special characters:
+The syntax also supports wildcards and negation using special characters :
 
-* `!` negates the condition described by the subsequent specification
-* `*` a sequence of zero or more characters
-* `**` ...
-* `***` ...
-* `?` any one character
-* `%` ...
-* `<integer>` integer (starting at 1) referencing the value that matched a wildcard used earlier in the specification, available in `-if`-predicated `-keep*` options
+* `!` negates the condition described by the subsequent specification.
+* `*` matches any reference type when used alone (this is not supported in all contexts in ProGuard), or a sequence of zero or more characters, other than package separators (`.`) when used with other symbols in a pattern.
+* `**` a sequence of zero or more characters, including package separators (`.`), but does not match primitive types.
+* `***` a sequence of zero or more characters, including package separators (`.`), does match primitive types and `void`.
+* `?` matches any one character.
+* `%` matches any primitive type (does not match `void`).
+* `<integer>` integer (starting at 1) referencing the value that matched a wildcard used earlier in the specification. 
+For `-if`-predicated `-keep*` options, the index can reference any earlier wildcard match in the specification for either part.
+Neither R8 nor ProGuard seem to handle back references in the presence of wildcards in both the class name and class member names.
+R8 does not appear to handle back references within member specifications.
+* `...` matches any number of arguments when used within parentheses (`(` and `)`) of a method specification
 
 For example:
 
