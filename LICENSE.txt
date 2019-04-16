@@ -1,6 +1,10 @@
 Copyright 2019 PreEmptive Solutions, LLC
 
-Except where otherwise noted, content on this site is licensed under CC BY-NC-ND 4.0 
+Android is a trademark of Google LLC.
+GitHub is a registered trademark of GitHub, Inc.
+Gradle is a registered trademark of Gradle, Inc.
+
+Except where otherwise noted, content on this site is licensed under CC BY-NC-ND 4.0
 
 Creative Commons Attribution-NonCommercial-NoDerivatives 4.0
 International Public License
