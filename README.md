@@ -27,8 +27,8 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-        } 
-    } 
+        }
+    }
 }
 ```
 
@@ -47,8 +47,8 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'custom-rules.txt' 
-        } 
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'custom-rules.txt'
+        }
     }
 }
 ```
@@ -71,11 +71,11 @@ android {
     productFlavors {
         free {
             dimension 'monetization'
-            proguardFile 'free-rules.txt' 
+            proguardFile 'free-rules.txt'
         }
         paid {
             dimension 'monetization'
-            proguardFile 'paid-rules.txt' 
+            proguardFile 'paid-rules.txt'
         }
     }
 }
@@ -116,8 +116,8 @@ There are several rules which control the naming of classes, methods, and fields
 | `-repackageclasses {name}`            | When renaming a class, move it to package `{name}`. *(Overrides `-flattenpackagehierarchy`)*  Using `-allowaccessmodification` increases the number of classes which can be moved to a new package. ([ProGuard docs](pg_man#repackageclasses)) ([See note](#flat_repack_note)) |
 | `-overloadaggressively`               | Use the same name as much as possible, even if it may not be allowed by the source language. ([ProGuard docs](pg_man#overloadaggressively)) |
 | `-adaptclassstrings {filter}`         | Update strings containing classnames to use the new names. This can be [filtered](pg_man#filter) to only look for strings in certain classes. ([ProGuard docs](pg_man#adaptclassstrings)) |
-| `-adaptresourcefilenames {filter}`    | ... |
-| `-adaptresourcefilecontents {filter}` | ... |
+| `-adaptresourcefilenames {filter}`    | Rename resource files to match renamed classes. This can be [filtered](pg_man#filter) to look at particular files. ([ProGuard docs](pg_man#adaptresourcefilenames)) |
+| `-adaptresourcefilecontents {filter}` | Update resource file contents to match renamed classes. This can be [filtered](pg_man#filter) to look at particular files. ([ProGuard docs](pg_man#adaptresourcefilecontents)) |
 
 <a name="flat_repack_note"></a>
 #### Flatten vs. Repackage
