@@ -18,6 +18,7 @@ It is not suitable if you are using R8 directly in a custom build process.
 
 [PreEmptive Solutions](https://www.preemptive.com) is the developer of [PreEmptive Protection - DashO](https://www.preemptive.com/products/dasho/overview), which provides powerful obfuscation and shielding for Android applications and libraries.
 
+<a name="enabling"></a>
 ## Enabling R8
 
 You can enable R8 in your Android project for a build type by using the `minifyEnabled` setting in your application's or library's Gradle buildscript:
@@ -229,3 +230,16 @@ The following settings are ignored:
 * `-target`
 * `-useuniqueclassmembernames`
 * `-verbose`
+
+## Troubleshooting
+
+### ProGuard appears to be running instead of R8
+
+Make sure that you do not have `android.enableR8=false` in your `gradle.properties` file.
+
+>**Note:** If you are using a version of the Android Gradle Plugin prior to 3.4, you will need to set `android.enableR8=true` in your `gradle.properties` file to enable R8.
+
+### Neither R8 nor ProGuard appears to be enabled
+
+Make sure that you have set `minifyEnabled` for all of the build types on which you want R8 to run.
+See [Enabling R8](#enabling) for details.
