@@ -21,7 +21,7 @@ It is not suitable if you are using R8 directly in a custom build process.
 <a name="enabling"></a>
 ## Enabling R8
 
-You can enable R8 in your Android project for a build type by using the `minifyEnabled` setting in your application's or library's Gradle buildscript:
+You can enable R8 in your Android project for a build type by using the `minifyEnabled` setting in your application's or library's Gradle build script:
 
 ```gradle
 android {
@@ -41,7 +41,7 @@ android.enableR8.fullMode=true
 
 ### Specifying R8 Configuration Files
 
-You can specify any number of R8 configuration files for a build type or product flavor using the `proguardFiles` setting in your application's or library's Gradle buildscript:
+You can specify any number of R8 configuration files for a build type or product flavor using the `proguardFiles` setting in your application's or library's Gradle build script:
 
 ```gradle
 android {
@@ -55,7 +55,7 @@ android {
 ```
 
 The `getDefaultProguardFile()` method specifies a configuration file provided by the Android Gradle Plugin that contains basic settings.
-You can use `'proguard-android.txt'` for the default ruleset used by the Android Gradle Plugin, or `'proguard-android-optimize.txt'` to enable optimization.
+You can use `'proguard-android.txt'` for the default rule set used by the Android Gradle Plugin, or `'proguard-android-optimize.txt'` to enable optimization.
 
 In this example, `'custom-rules.txt'` refers to a configuration file named 'custom-rules.txt' in the same directory as your application's or library's `build.gradle` file.
 You can specify your own R8 rules in such a file.
@@ -169,10 +169,10 @@ Specify either `extends <type-name>` or `implements <interface-name>` to match t
 For example, `-keep class * implements some.particular.SpecialInterface` will match all classes that implement `SpecialInterface`.
 `extends` and `implements` can be used interchangeably.
 
-Specify an annotation on the type filter to indicate that only types that are annoted with that annotation should match the filter.
+Specify an annotation on the type filter to indicate that only types that are annotated with that annotation should match the filter.
 For example, `-keep @some.package.SomeAnnotation interface *` will match all interfaces that are annotated with `@SomeAnnotation`.
 
-Several other useful constructs recognized in the class specificiation:
+Several other useful constructs recognized in the class specification:
 
 * `<fields>;` is a special string representing all fields
 * `<methods>;` is a special string representing all methods
@@ -192,7 +192,7 @@ There are several rules which control the naming of classes, methods, and fields
 | `-flattenpackagehierarchy {name}`     | When renaming a class, move the package containing the class to a common base package `{name}`. Using `-allowaccessmodification` increases the number of classes which can be moved to a new package. ([ProGuard docs](pg_man#flattenpackagehierarchy)) ([See note](#flat_repack_note)) |
 | `-repackageclasses {name}`            | When renaming a class, move it to package `{name}`. *(Overrides `-flattenpackagehierarchy`)*  Using `-allowaccessmodification` increases the number of classes which can be moved to a new package. ([ProGuard docs](pg_man#repackageclasses)) ([See note](#flat_repack_note)) |
 | `-overloadaggressively`               | Use the same name as much as possible, even if it may not be allowed by the source language. ([ProGuard docs](pg_man#overloadaggressively)) |
-| `-adaptclassstrings {filter}`         | Update strings containing classnames to use the new names. This can be [filtered](pg_man#filter) to only look for strings in certain classes. ([ProGuard docs](pg_man#adaptclassstrings)) |
+| `-adaptclassstrings {filter}`         | Update strings containing class names to use the new names. This can be [filtered](pg_man#filter) to only look for strings in certain classes. ([ProGuard docs](pg_man#adaptclassstrings)) |
 | `-adaptresourcefilenames {filter}`    | Rename Java resource files to match renamed classes. This can be [filtered](pg_man#filter) to look at particular files. ([ProGuard docs](pg_man#adaptresourcefilenames)) |
 | `-adaptresourcefilecontents {filter}` | Update Java resource file contents to match renamed classes. This can be [filtered](pg_man#filter) to look at particular files. ([ProGuard docs](pg_man#adaptresourcefilecontents)) |
 
