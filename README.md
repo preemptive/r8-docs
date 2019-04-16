@@ -233,7 +233,8 @@ The following settings are ignored:
 
 ### Not Applicable
 
-Some options are not applicable in Android projects:
+R8 is designed for use with Android projects.
+However some options it supports are not applicable in Android projects:
 
 | Rule                            | Description                                |
 |---------------------------------|--------------------------------------------|
