@@ -231,6 +231,16 @@ The following settings are ignored:
 * `-useuniqueclassmembernames`
 * `-verbose`
 
+### Not Applicable
+
+R8 is designed for use with Android projects.
+However some options it supports are not applicable in Android projects:
+
+| Rule                            | Description                                |
+|---------------------------------|--------------------------------------------|
+| `-keepdirectories {filter}`     | Keep directory entries in the output jar or zip file. ([ProGuard rules](pg_man#keepdirectories)) |
+
+
 ## Troubleshooting
 
 ### ProGuard appears to be running instead of R8
