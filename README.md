@@ -94,13 +94,13 @@ android {
 | `-include <filename>`                 | Include configuration from file with filename `filename`. ([ProGuard docs](pg_man#at)) |
 | `-keepattributes [filter]`            | Allows you to specify supported Java [attributes](pg_man/attributes) for R8 to retain in the code. Unlike ProGuard, R8 does not respect rules regarding `Synthetic`, `Deprecated`, or `MethodParameters` and will remove these attributes regardless of what is configured in `-keepattributes`. Also, for class version 50 (Java 6), R8 will keep a `StackMapTable` attribute only if `StackMapTable` is covered by `-keepattributes`; it is always kept for later class versions. ([ProGuard docs](pg_man#keepattributes)) ([See issue](itg/130421335))|
 | `-printconfiguration [file]`          | Outputs the used configuration rules to the specified file, or to stdout if there is no file specified. Note that if you specify a file, every build of a variant using this rule will overwrite that file. ([ProGuard docs](pg_man#printconfiguration)) |
-| `-printseeds [{filename}]`            | Outputs a list of the classes, methods, and fields which match the [keep options](#minification) to the specified file, or to stdout if there is no file specified. Note that if you specify a file, every build of a variant using this rule will overwrite that file. Note that unlike ProGuard, R8 will **not** automatically output a build/outputs/mapping[/{flavorName}]/{buildType}/seeds.txt file. ([ProGuard docs](pg_man#printseeds)) |
-| `-printusage [{filename}]`            | Outputs a list of the classes, methods, and fields which were removed during [minification](#minification) to the specified file, or to stdout if there is no file specified. Note that if you specify a file, every build of a variant using this rule will overwrite that file. Note that unlike ProGuard, R8 will **not** automatically output a build/outputs/mapping[/{flavorName}]/{buildType}/usage.txt file. ([ProGuard docs](pg_man#printusage)) |
+| `-printseeds [{filename}]`            | Outputs a list of the classes, methods, and fields which match the [keep options](#keep_options) to the specified file, or to stdout if there is no file specified. Note that if you specify a file, every build of a variant using this rule will overwrite that file. Note that unlike ProGuard, R8 will **not** automatically output a build/outputs/mapping[/{flavorName}]/{buildType}/seeds.txt file. ([ProGuard docs](pg_man#printseeds)) |
+| `-printusage [{filename}]`            | Outputs a list of the classes, methods, and fields which were removed during [shrinking](#keep_options) to the specified file, or to stdout if there is no file specified. Note that if you specify a file, every build of a variant using this rule will overwrite that file. Note that unlike ProGuard, R8 will **not** automatically output a build/outputs/mapping[/{flavorName}]/{buildType}/usage.txt file. ([ProGuard docs](pg_man#printusage)) |
 
-<a name="minification"></a>
-## Configuring Minification and Renaming
+<a name="keep_options"></a>
+## Keep Options
 
-Application of minification and renaming is configured by using the `-keep*` options.
+Application of shrinking and renaming is configured by using the `-keep*` options.
 These options are configured by proving a [class specification](#class_spec) and optional [modifiers](#modifiers).
 
 | Option (and Arguments)                                     | Description                                                                                                    |
@@ -113,7 +113,6 @@ These options are configured by proving a [class specification](#class_spec) and
 | `-keepclasseswithmembernames[,modifier[...]] <class-spec>` | Prevent matching classes and matching members from being renamed if the corresponding class contains all of the specified members. This does not prevent matching members from being removed by shrinking (ProGuard would also prevent the specified members from being removed). ([ProGuard docs](pg_man#keepclasseswithmembernames)) |
 | `-whyareyoukeeping <class-spec>`                           | Log details about why particular classes and members were maintained in the output. ([ProGuard docs](pg_man#whyareyoukeeping)) |
 | `-if <class-spec> <one-keep-option>`                           | Conditionally apply one keep option. If class members are specified, the class and all specified members must match. Otherwise, only the class need match. Class specification in the keep option can contain back references to wildcards in the `-if` class specification. ([ProGuard docs](pg_man#if)) |
-| `-keepdirectories [<path-filter>[,...]]`                   | ... |
 
 <a name="modifiers"></a>
 Keep option modifiers:
@@ -121,9 +120,11 @@ Keep option modifiers:
 | Modifier                   | Effect                                                      |
 |----------------------------|-------------------------------------------------------------|
 | `allowshrinking`           | Allow the target(s) of the rule to be removed by shrinking. ([ProGuard docs](pg_man#allowshrinking)) |
-| `allowoptimization`        | ... ([ProGuard docs](pg_man#allowoptimization)) |
+| `allowoptimization`        | Allow the target(s) of the rule to be optimized. ([ProGuard docs](pg_man#allowoptimization)) |
 | `allowobfuscation`         | Allow the target(s) of the rule to be renamed. Adding this modifier to one of the `-keep*names` options causes that option to have no effect. ([ProGuard docs](pg_man#allowobfuscation)) |
-| `includedescriptorclasses` | Prevent specified field types, method return types, and method parameter types from being renamed. Thus preserving field and method signatures (post type-erasure, e.g. this does not preserve generic types). ([ProGuard docs](pg_man#includedescriptorclasses)) |
+| `includedescriptorclasses` | Prevent specified field types, method return types, and method parameter types from being renamed. This preserves field and method signatures (post type-erasure, e.g. this does not preserve generic types). ([ProGuard docs](pg_man#includedescriptorclasses)) |
+
+>**NOTE:** It is not clear what optimization R8 does, or how much control over that process is provided through the `-keep*` options and the `allowoptimization` modifier.
 
 <a name="class_spec"></a>
 ### Class Specification
@@ -139,21 +140,22 @@ For example:
 ```
 
 The syntax has strong support for filtering classes, methods, and fields.
-The syntax supports `class`, `interface`, `enum`, and `@interface` to represent classes, interfaces, enums, and annotations, respectively.
+The syntax supports `class` (classes), `interface` (interfaces), `enum` (enumerations), and `@interface` (annotations).
+The special symbol `<init>` is used to represent the name of a class's constructor.
 
 The syntax also supports wildcards and negation using special characters :
 
 * `!` negates the condition described by the subsequent specification.
-* `*` matches any reference type when used alone (this is not supported in all contexts in ProGuard), or a sequence of zero or more characters, other than package separators (`.`) when used with other symbols in a pattern.
-* `**` a sequence of zero or more characters, including package separators (`.`), but does not match primitive types.
-* `***` a sequence of zero or more characters, including package separators (`.`), does match primitive types and `void`.
+* `*` a sequence of zero or more characters, other than package separators (`.`), when used with other symbols in a pattern. Matches any reference type when used alone (this is not supported in all contexts in ProGuard).
+* `**` a sequence of zero or more characters, including package separators (`.`), when used with other symbols in a pattern. Matches any reference type when used alone (does not match primitive types or `void`).
+* `***` a sequence of zero or more characters, including package separators (`.`), when used with other symbols in a pattern. Matches any reference type, primitive type, or `void` when used alone.
+* `%` matches any primitive type (does not match `void`) when used alone.
 * `?` matches any one character.
-* `%` matches any primitive type (does not match `void`).
 * `<integer>` integer (starting at 1) referencing the value that matched a wildcard used earlier in the specification. 
 For `-if`-predicated `-keep*` options, the index can reference any earlier wildcard match in the specification for either part.
 Neither R8 nor ProGuard seem to handle back references in the presence of wildcards in both the class name and class member names.
 R8 does not appear to handle back references within member specifications.
-* `...` matches any number of arguments when used within parentheses (`(` and `)`) of a method specification
+* `...` matches any number of arguments when used within parentheses (`(` and `)`) of a method specification.
 
 For example:
 
@@ -167,7 +169,7 @@ There are two powerful constructs that can be used with class filtering: subtype
 
 Specify either `extends <type-name>` or `implements <interface-name>` to match types that either extend or implement another type.
 For example, `-keep class * implements some.particular.SpecialInterface` will match all classes that implement `SpecialInterface`.
-`extends` and `implements` can be used interchangeably.
+Note that `extends` and `implements` can be used interchangeably.
 
 Specify an annotation on the type filter to indicate that only types that are annotated with that annotation should match the filter.
 For example, `-keep @some.package.SomeAnnotation interface *` will match all interfaces that are annotated with `@SomeAnnotation`.
@@ -177,10 +179,8 @@ Several other useful constructs recognized in the class specification:
 * `<fields>;` is a special string representing all fields
 * `<methods>;` is a special string representing all methods
 
-It isn't clear to me how negation works in all of the various places that it is accepted by the parser.
-
 >**NOTE:** There are some differences between how the filter syntax is interpreted by R8 and ProGuard.
-> For example, `*;` represents all fields and methods in both, but only R8 recognizes `* *;` and `* *(...);` as alternative representations for all fields and all methods, respectively.
+> For example, `*;` represents all fields and methods in both, but only R8 recognizes `* *;` (all fields) and `* *(...);` (all methods).
 
 ## Renaming Configuration
 
@@ -281,6 +281,7 @@ The following settings will cause R8 to issue an error:
 
 * `-microedition`
 * `-skipnonpubliclibraryclasses`
+* `includecode` (modifier used with `-keep*` options)
 
 The following settings will cause R8 to issue a warning message:
 
