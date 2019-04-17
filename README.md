@@ -1,22 +1,22 @@
 ## Introduction
 
-This site is unofficial documentation for [R8](https://android-developers.googleblog.com/2018/11/r8-new-code-shrinker-from-google-is.html), Google's code shrinker for Android.
-Google intends R8 to be a drop-in replacement for [ProGuard](https://www.guardsquare.com/en/products/proguard), and, as R8 is designed to be compatible with most R8 rules, the [ProGuard Manual](pg_man) is a valuable reference for R8.
+This is unofficial documentation for [R8](https://android-developers.googleblog.com/2018/11/r8-new-code-shrinker-from-google-is.html), Google's code shrinker for Android&trade;.
+Google intends R8 to be a drop-in replacement for [ProGuard](https://www.guardsquare.com/en/products/proguard), and, as R8 is designed to be compatible with most ProGuard rules, the [ProGuard Manual](pg_man) is a valuable reference for R8.
 However, there still are substantial differences between R8 and ProGuard, and Google has not documented those differences.
 This site is meant to fill that gap.
 
-This site is [open source on GitHub](https://github.com/preemptive/r8-docs) and we encourage you to contribute by opening [issues](https://github.com/preemptive/r8-docs/issues) or submitting pull requests.
+This site is [open source on GitHub&trade;](https://github.com/preemptive/r8-docs) and we encourage you to contribute by opening [issues](https://github.com/preemptive/r8-docs/issues) or submitting pull requests.
 
 ### Assumptions
 
-This documentation assumes that you are using the standard Gradle build process of an Android application or library with version 3.4 or later of the Android Gradle Plugin.
+This documentation assumes that you are using the standard Gradle&trade; build process of an Android application or library with version 3.4 or later of the Android Gradle Plugin.
 It is not suitable if you are using R8 directly in a custom build process.
 
 >**Note:** Known issues reflected in this document were last tested on R8 v1.4.77 using Android Gradle Plugin v3.4.0-rc03.
 
 ### Who We Are
 
-[PreEmptive Solutions](https://www.preemptive.com) is the developer of [PreEmptive Protection - DashO](https://www.preemptive.com/products/dasho/overview), which provides powerful obfuscation and shielding for Android applications and libraries.
+[PreEmptive Solutions](https://www.preemptive.com) is the developer of [PreEmptive Protection&trade; - DashO&trade;](https://www.preemptive.com/products/dasho/overview), which provides powerful obfuscation and shielding for Android applications and libraries.
 
 <a name="enabling"></a>
 ## Enabling R8
