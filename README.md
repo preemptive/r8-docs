@@ -39,6 +39,7 @@ R8 defaults to using ProGuard-compatible optimizations, but you can enable addit
 android.enableR8.fullMode=true
 ```
 
+<a name="specifying"></a>
 ### Specifying R8 Configuration Files
 
 You can specify any number of R8 configuration files for a build type or product flavor using the `proguardFiles` setting in your application's or library's Gradle build script:
@@ -330,3 +331,28 @@ Make sure that you do not have `android.enableR8=false` in your `gradle.properti
 
 Make sure that you have set `minifyEnabled` for all of the build types on which you want R8 to run.
 See [Enabling R8](#enabling) for details.
+
+### D8: Unsupported option: -skipnonpubliclibraryclasses
+
+This option is [unsupported in R8](#unsupported-options).
+Remove it from your configuration.
+
+### Unexpected java.lang.ClassNotFoundException at runtime
+
+Assuming that this occurs only when you are using R8 (or ProGuard), R8 has not detected that the class described in the exception message is used or has renamed it in a way that breaks reflection calls.
+R8 detects most straightforward reflection calls, but doesn't necessarily catch all cases.
+Use a [`-keep`](#keep_options) rule to prevent the class from being removed or renamed.
+
+### Custom rules don't appear to be used
+
+Make sure that any rule file that you want to use is properly configured in your Gradle build script with `proguardFiles` or `proguardFile`.
+Relative paths configured in your Gradle build script should be relative to the application or library module for which you would like the rules to apply.
+See [Specifying R8 Configuration Files](#specifying) for details.
+
+>**Note:** The Android Gradle Plugin will not error or warn you if it cannot locate the specified file.
+
+### The rule [some rule] uses extends but actually matches implements.
+
+R8 issues this warning if you use an `extends` rule to match descendents of an interface rather than `implements`, regardless of whether the descendents you're trying to match are classes or interfaces.
+If the specified rule is a custom rule that you have created, you can update the rule to use `implements` rather than `extends`.
+However, some libraries, including Android support libraries, contain rules that will produce this warning and unfortunately there is no easy way to resolve or suppress this warning in that case.
