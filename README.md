@@ -109,7 +109,7 @@ These options are configured by proving a [class specification](#class_spec) and
 | `-keep[,modifier[...]] <class-spec>`                       | Exclude matching classes, and matching members if specified, from shrinking, optimization, and renaming. Shrinking exclusion on the class means that members will not be removed, but does not prevent members from being renamed. Specifying members will prevent them from being renamed if present. ([ProGuard docs](pg_man#keep)) |
 | `-keepclassmembers[,modifier[...]] <class-spec>`           | Exclude matching members in matching classes from shrinking, optimization, and renaming. ([ProGuard docs](pg_man#keepclassmembers)) |
 | `-keepclasseswithmembers[,modifier[...]] <class-spec>`     | Exclude matching classes and matching members from shrinking, optimization, and renaming if the corresponding class has all of the specified members. ([ProGuard docs](pg_man#keepclasseswithmembers)) |
-| `-keepnames[,modifier[...]] <class-spec>`                  | Prevent matching classes, and matching **fields** if specified, from being renamed. R8 does not prevent specified methods from being renamed like ProGuard does. ([ProGuard docs](pg_man#keepnames)) |
+| `-keepnames[,modifier[...]] <class-spec>`                  | Prevent matching classes, and matching members if specified, from being renamed. ([ProGuard docs](pg_man#keepnames)) |
 | `-keepclassmembernames[,modifier[...]] <class-spec>`       | Prevent any matching members from being renamed in matching classes. ([ProGuard docs](pg_man#keepclassmembernames)) |
 | `-keepclasseswithmembernames[,modifier[...]] <class-spec>` | Prevent matching classes and matching members from being renamed if the corresponding class contains all of the specified members. This does not prevent matching members from being removed by shrinking (ProGuard would also prevent the specified members from being removed). ([ProGuard docs](pg_man#keepclasseswithmembernames)) |
 | `-whyareyoukeeping <class-spec>`                           | Log details about why particular classes and members were maintained in the output. ([ProGuard docs](pg_man#whyareyoukeeping)) |
@@ -164,7 +164,7 @@ For example:
 -keepclassmembernames class * { long *UUID; } # don't rename long-valued fields ending with UUID in classes
 ```
 
-Note that R8 does not currently respect negation (`!`) of class member expressions in `-if` class specifications.
+Note that R8 does not currently respect negation (`!`) of class member expressions in class specifications for the `-if`, `-keepclasseswithmembers`, and `-keepclasseswithmembernames` ([See issue](itg/130665986)).
 
 There are two powerful constructs that can be used with class filtering: subtype matching and annotated matching.
 
