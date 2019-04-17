@@ -1,6 +1,6 @@
 ## Introduction
 
-This site is unofficial documentation for [R8](https://android-developers.googleblog.com/2018/11/r8-new-code-shrinker-from-google-is.html), Google's code shrinker for Android&trade;.
+This is unofficial documentation for [R8](https://android-developers.googleblog.com/2018/11/r8-new-code-shrinker-from-google-is.html), Google's code shrinker for Android&trade;.
 Google intends R8 to be a drop-in replacement for [ProGuard](https://www.guardsquare.com/en/products/proguard), and, as R8 is designed to be compatible with most ProGuard rules, the [ProGuard Manual](pg_man) is a valuable reference for R8.
 However, there still are substantial differences between R8 and ProGuard, and Google has not documented those differences.
 This site is meant to fill that gap.
@@ -253,8 +253,3 @@ Make sure that you do not have `android.enableR8=false` in your `gradle.properti
 
 Make sure that you have set `minifyEnabled` for all of the build types on which you want R8 to run.
 See [Enabling R8](#enabling) for details.
-
->PreEmptive Protection and DashO are trademarks of PreEmptive Solutions, LLC.<br/>
->Android is a trademark of Google LLC.<br/>
->GitHub is a registered trademark of GitHub, Inc.<br/>
->Gradle is a registered trademark of Gradle, Inc.
