@@ -5,11 +5,12 @@ Modified by PreEmptive Solutions, LLC.
 */
 
 @import "normalize";
-@import "rouge-base16-dark";
+@import "rouge";
 
 $left_column: 50%;
 $left_column_margin: -700px;
 $footer_margin:$left_column_margin + 50px;
+$code_background:#F8F8F8;
 
 body {
   font:14px/22px 'Lato', Arial, sans-serif;
@@ -52,6 +53,10 @@ a {
   text-decoration:none;
 }
 
+section a {
+  text-decoration:underline;
+}
+
 a small {
   font-size:11px;
   color:#666;
@@ -88,17 +93,15 @@ blockquote {
 code {
   font-family: PT Mono, Bitstream Vera Sans Mono, Lucida Console, Terminal;
   font-size:13px;
-  color:#efefef;
-  text-shadow: 0px 1px 0px #000;
-  margin: 0 4px;
-  padding: 2px 6px;
-  background: #333;
+  margin: 0 1px;
+  padding: 2px 2px;
+  background: $code_background;
   border-radius: 2px;
 }
 
 pre {
   padding:8px 15px;
-  background: #333333;
+  background: $code_background;
   border-radius: 3px;
   border:1px solid #c7c7c7;
   overflow: auto;
@@ -190,8 +193,6 @@ header {
   position: fixed;
   top: 75px;
   background: #989899;
-  border: 1px solid #1f497d;
-  box-shadow: 0px 1px 3px rgba(0,0,0,.25);
   border-radius: 0px 2px 2px 0px;
   padding-right: 10px;
 

@@ -7,6 +7,7 @@
     {% if site.google_analytics and jekyll.environment == 'production' %}
       {% include analytics.html %}
     {% endif %}
+    <title>{{ site.title }}</title>
 
 {% seo %}
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
@@ -38,9 +39,9 @@
         <ul></ul>
       </nav>
       <section>
-        {{ content 
-            | replace: '<a href="https://www.preemptive.com', '<a target="_blank" href="https://www.preemptive.com' 
-            | replace: '<a href="pg_man', '<a href="https://www.guardsquare.com/en/products/proguard/manual/usage'  
+        {{ content
+            | replace: '<a href="https://www.preemptive.com', '<a target="_blank" href="https://www.preemptive.com'
+            | replace: '<a href="pg_man', '<a href="https://www.guardsquare.com/en/products/proguard/manual/usage'
             | replace: '<a href="itg/', '<a href="https://issuetracker.google.com/issues/'
             | replace: '<a href="http', '<a rel="nofollow" target="_blank" href="http'
             }}
@@ -48,7 +49,9 @@
       </section>
       <footer>
         {% if site.github.is_project_page %}
-          <p>Project maintained by <a href="{{ site.github.owner_url }}">PreEmptive Solutions, LLC.</a></p>
+          <p>Copyright 2019 <a target="_blank" href="https://www.preemptive.com">PreEmptive Solutions, LLC.</a></p>
+          <p><a rel="license" target="_blank" href="{{ site.github.repository_url }}/blob/master/LICENSE.txt"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a></p>
+          <p><a rel="license" target="_blank" href="{{ site.github.repository_url }}/blob/master/LICENSE.txt">Trademarks</a></p>
         {% endif %}
         <p><small><a target="_blank" href="{{ site.github.repository_url }}">Hosted on GitHub</a></small></p>
       </footer>
