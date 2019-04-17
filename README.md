@@ -16,7 +16,7 @@ It is not suitable if you are using R8 directly in a custom build process.
 
 ### Who We Are
 
-[PreEmptive Solutions](https://www.preemptive.com) is the developer of [PreEmptive Protection - DashO](https://www.preemptive.com/products/dasho/overview), which provides powerful obfuscation and shielding for Android applications and libraries.
+[PreEmptive Solutions](https://www.preemptive.com) is the developer of [PreEmptive Protection&trade; - DashO&trade;](https://www.preemptive.com/products/dasho/overview), which provides powerful obfuscation and shielding for Android applications and libraries.
 
 <a name="enabling"></a>
 ## Enabling R8
@@ -254,7 +254,7 @@ Make sure that you do not have `android.enableR8=false` in your `gradle.properti
 Make sure that you have set `minifyEnabled` for all of the build types on which you want R8 to run.
 See [Enabling R8](#enabling) for details.
 
-
+>PreEmptive Protection and DashO are trademarks of PreEmptive Solutions, LLC.<br/>
 >Android is a trademark of Google LLC.<br/>
 >GitHub is a registered trademark of GitHub, Inc.<br/>
 >Gradle is a registered trademark of Gradle, Inc.
