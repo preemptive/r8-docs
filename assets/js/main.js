@@ -66,4 +66,7 @@ $(function() {
     navigateToHash(true);
     event.preventDefault();
   });
+  $("code,pre").html(function(index, oldHtml) {
+    return oldHtml.replace(/^(-[a-z]+)/g, '<span class="rulename">$1</span>');
+  });
 });

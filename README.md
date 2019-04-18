@@ -55,17 +55,20 @@ android {
 }
 ```
 
-The `getDefaultProguardFile()` method specifies a configuration file provided by the Android Gradle Plugin that contains basic settings.
+The `getDefaultProguardFile()` method specifies a configuration file provided by the Android Gradle Plugin that contains basic rules suitable for Android builds.
 You can use `'proguard-android.txt'` for the default rule set used by the Android Gradle Plugin, or `'proguard-android-optimize.txt'` to enable optimization.
 
-In this example, `'custom-rules.txt'` refers to a configuration file named 'custom-rules.txt' in the same directory as your application's or library's `build.gradle` file.
+You can find these default files in the `build/intermediates/proguard-files` directory within your application or library module's directory after running a build.
+Note that while the files in this `proguard-rules` directory have version numbers affixed to their name, you should not include these version numbers in the file name in your Gradle build script.
+
+In this example, `'custom-rules.txt'` refers to a configuration file named "custom-rules.txt" in the same directory as your application's or library's `build.gradle` file.
 You can specify your own R8 rules in such a file.
 
 <a name="rules_note"></a>
 >**NOTE:** The Android Gradle Plugin will generate additional rules based on references to classes in your application's or library's manifest and resources.
 >If no `proguardFile` or `proguardFiles` configuration is provided, R8 will also add the configuration from the default `proguard-android.txt` file.
 
-You can also configure flavor specific rules using using `proguardFile`:
+You can also configure flavor specific rules using `proguardFile`:
 
 ```gradle
 android {
@@ -83,7 +86,7 @@ android {
 }
 ```
 
-## General Options
+## General Rules
 
 | Rule                                  | Description                          |
 |---------------------------------------|--------------------------------------|
@@ -93,44 +96,44 @@ android {
 | `-dontoptimize`                       | Do not optimize the code, regardless of other configuration. This is part of the [default](#rules_note) configuration. ([ProGuard docs](pg_man#dontoptimize)) |
 | `-dontshrink`                         | Do not remove any classes, methods, or fields, regardless of other configuration. ([ProGuard docs](pg_man#dontshrink)) |
 | `-include <filename>`                 | Include configuration from file with filename `filename`. ([ProGuard docs](pg_man#at)) |
-| `-keepattributes [filter]`            | Allows you to specify supported Java [attributes](pg_man/attributes) for R8 to retain in the code. Unlike ProGuard, R8 does not respect rules regarding `Synthetic`, `Deprecated`, or `MethodParameters` and will remove these attributes regardless of what is configured in `-keepattributes`. Also, for class version 50 (Java 6), R8 will keep a `StackMapTable` attribute only if `StackMapTable` is covered by `-keepattributes`; it is always kept for later class versions. ([ProGuard docs](pg_man#keepattributes)) ([See issue](itg/130421335))|
-| `-printconfiguration [file]`          | Outputs the used configuration rules to the specified file, or to stdout if there is no file specified. Note that if you specify a file, every build of a variant using this rule will overwrite that file. ([ProGuard docs](pg_man#printconfiguration)) |
-| `-printseeds [{filename}]`            | Outputs a list of the classes, methods, and fields which match the [keep options](#keep_options) to the specified file, or to stdout if there is no file specified. Note that if you specify a file, every build of a variant using this rule will overwrite that file. Note that unlike ProGuard, R8 will **not** automatically output a build/outputs/mapping[/{flavorName}]/{buildType}/seeds.txt file. ([ProGuard docs](pg_man#printseeds)) |
-| `-printusage [{filename}]`            | Outputs a list of the classes, methods, and fields which were removed during [shrinking](#keep_options) to the specified file, or to stdout if there is no file specified. Note that if you specify a file, every build of a variant using this rule will overwrite that file. Note that unlike ProGuard, R8 will **not** automatically output a build/outputs/mapping[/{flavorName}]/{buildType}/usage.txt file. ([ProGuard docs](pg_man#printusage)) |
+| `-keepattributes [<filter>]`          | Allows you to specify supported Java [attributes](pg_man/attributes) for R8 to retain in the code. Unlike ProGuard, R8 does not respect rules regarding `Synthetic`, `Deprecated`, or `MethodParameters` and will remove these attributes regardless of what is configured in `-keepattributes`. Also, for class version 50 (Java 6), R8 will keep a `StackMapTable` attribute only if `StackMapTable` is covered by `-keepattributes`; it is always kept for later class versions. ([ProGuard docs](pg_man#keepattributes)) ([See issue](itg/130421335))|
+| `-printconfiguration [<file>]`        | Outputs the used configuration rules to the specified file, or to stdout if there is no file specified. Note that if you specify a file, every build of a variant using this rule will overwrite that file. ([ProGuard docs](pg_man#printconfiguration)) |
+| `-printseeds [<filename>]`            | Outputs a list of the classes, methods, and fields which match the [keep rules](#keep_rules) to the specified file, or to stdout if there is no file specified. Note that if you specify a file, every build of a variant using this rule will overwrite that file. Note that unlike ProGuard, R8 will **not** automatically output a build/outputs/mapping[/{flavorName}]/{buildType}/seeds.txt file. ([ProGuard docs](pg_man#printseeds)) |
+| `-printusage [<filename>]`            | Outputs a list of the classes, methods, and fields which were removed during [shrinking](#keep_rules) to the specified file, or to stdout if there is no file specified. Note that if you specify a file, every build of a variant using this rule will overwrite that file. Note that unlike ProGuard, R8 will **not** automatically output a build/outputs/mapping[/{flavorName}]/{buildType}/usage.txt file. ([ProGuard docs](pg_man#printusage)) |
 
-<a name="keep_options"></a>
-## Keep Options
+<a name="keep_rules"></a>
+## Keep Rules
 
-Application of shrinking and renaming is configured by using the `-keep*` options.
-These options are configured by proving a [class specification](#class_spec) and optional [modifiers](#modifiers).
+Application of shrinking and renaming is configured by using the `-keep*` rules.
+These rules are configured by proving a [class specification](#class_spec) and optional [modifiers](#modifiers).
 
-| Option (and Arguments)                                     | Description                                                                                                    |
-|------------------------------------------------------------|------------------------------------------------------------------------|
-| `-keep[,modifier[...]] <class-spec>`                       | Exclude matching classes, and matching members if specified, from shrinking, optimization, and renaming. Shrinking exclusion on the class means that members will not be removed, but does not prevent members from being renamed. Specifying members will prevent them from being renamed if present. ([ProGuard docs](pg_man#keep)) |
-| `-keepclassmembers[,modifier[...]] <class-spec>`           | Exclude matching members in matching classes from shrinking, optimization, and renaming. ([ProGuard docs](pg_man#keepclassmembers)) |
-| `-keepclasseswithmembers[,modifier[...]] <class-spec>`     | Exclude matching classes and matching members from shrinking, optimization, and renaming if the corresponding class has all of the specified members. ([ProGuard docs](pg_man#keepclasseswithmembers)) |
-| `-keepnames[,modifier[...]] <class-spec>`                  | Prevent matching classes, and matching members if specified, from being renamed. ([ProGuard docs](pg_man#keepnames)) |
-| `-keepclassmembernames[,modifier[...]] <class-spec>`       | Prevent any matching members from being renamed in matching classes. ([ProGuard docs](pg_man#keepclassmembernames)) |
-| `-keepclasseswithmembernames[,modifier[...]] <class-spec>` | Prevent matching classes and matching members from being renamed if the corresponding class contains all of the specified members. This does not prevent matching members from being removed by shrinking (ProGuard would also prevent the specified members from being removed). ([ProGuard docs](pg_man#keepclasseswithmembernames)) |
-| `-whyareyoukeeping <class-spec>`                           | Log details about why particular classes and members were maintained in the output. ([ProGuard docs](pg_man#whyareyoukeeping)) |
-| `-if <class-spec> <one-keep-option>`                           | Conditionally apply one keep option. If class members are specified, the class and all specified members must match. Otherwise, only the class need match. Class specification in the keep option can contain back references to wildcards in the `-if` class specification. ([ProGuard docs](pg_man#if)) |
+| Rule (and Arguments)                                         | Description   |
+|--------------------------------------------------------------|---------------|
+| `-keep[,<modifier>[...]] <class-spec>`                       | Exclude matching classes, and matching members if specified, from shrinking, optimization, and renaming. Shrinking exclusion on the class means that members will not be removed, but does not prevent members from being renamed. Specifying members will prevent them from being renamed if present. ([ProGuard docs](pg_man#keep)) |
+| `-keepclassmembers[,<modifier>[...]] <class-spec>`           | Exclude matching members in matching classes from shrinking, optimization, and renaming. ([ProGuard docs](pg_man#keepclassmembers)) |
+| `-keepclasseswithmembers[,<modifier>[...]] <class-spec>`     | Exclude matching classes and matching members from shrinking, optimization, and renaming if the corresponding class has all of the specified members. ([ProGuard docs](pg_man#keepclasseswithmembers)) |
+| `-keepnames[,<modifier>[...]] <class-spec>`                  | Prevent matching classes, and matching members if specified, from being renamed. ([ProGuard docs](pg_man#keepnames)) |
+| `-keepclassmembernames[,<modifier>[...]] <class-spec>`       | Prevent any matching members from being renamed in matching classes. ([ProGuard docs](pg_man#keepclassmembernames)) |
+| `-keepclasseswithmembernames[,<modifier>[...]] <class-spec>` | Prevent matching classes and matching members from being renamed if the corresponding class contains all of the specified members. This does not prevent matching members from being removed by shrinking (ProGuard would also prevent the specified members from being removed). ([ProGuard docs](pg_man#keepclasseswithmembernames)) |
+| `-whyareyoukeeping <class-spec>`                             | Log details about why particular classes and members were maintained in the output. ([ProGuard docs](pg_man#whyareyoukeeping)) |
+| `-if <class-spec> <one-keep-rule>`                           | Conditionally apply one keep rule. If class members are specified, the class and all specified members must match. Otherwise, only the class need match. Class specification in the keep rule can contain back references to wildcards in the `-if` class specification. ([ProGuard docs](pg_man#if)) |
 
 <a name="modifiers"></a>
-Keep option modifiers:
+Keep rule modifiers:
 
-| Modifier                   | Effect                                                      |
-|----------------------------|-------------------------------------------------------------|
-| `allowshrinking`           | Allow the target(s) of the rule to be removed by shrinking. ([ProGuard docs](pg_man#allowshrinking)) |
-| `allowoptimization`        | Allow the target(s) of the rule to be optimized. ([ProGuard docs](pg_man#allowoptimization)) |
-| `allowobfuscation`         | Allow the target(s) of the rule to be renamed. Adding this modifier to one of the `-keep*names` options causes that option to have no effect. ([ProGuard docs](pg_man#allowobfuscation)) |
-| `includedescriptorclasses` | Prevent specified field types, method return types, and method parameter types from being renamed. This preserves field and method signatures (post type-erasure, e.g. this does not preserve generic types). ([ProGuard docs](pg_man#includedescriptorclasses)) |
+| Modifier                         | Effect                                    |
+|----------------------------------|-------------------------------------------|
+| `allowshrinking`                 | Allow the target(s) of the rule to be removed by shrinking. ([ProGuard docs](pg_man#allowshrinking)) |
+| `allowoptimization`              | Allow the target(s) of the rule to be optimized. ([ProGuard docs](pg_man#allowoptimization)) |
+| `allowobfuscation`               | Allow the target(s) of the rule to be renamed. Adding this modifier to one of the `-keep*names` rules causes that rule to have no effect. ([ProGuard docs](pg_man#allowobfuscation)) |
+| `includedescriptorclasses`       | Prevent specified field types, method return types, and method parameter types from being renamed. This preserves field and method signatures (post type-erasure, e.g. this does not preserve generic types). ([ProGuard docs](pg_man#includedescriptorclasses)) |
 
->**NOTE:** It is not clear what optimization R8 does, or how much control over that process is provided through the `-keep*` options and the `allowoptimization` modifier.
+>**NOTE:** It is not clear what optimization R8 does, or how much control over that process is provided through the `-keep*` rules and the `allowoptimization` modifier.
 
 <a name="class_spec"></a>
 ### Class Specification
 
-Several of the options accept a class specification (`class-spec`) which is a specification of classes and members that has a Java-like syntax.
+Several of the rules accept a class specification (`class-spec`) which is a specification of classes and members that has a Java-like syntax.
 For example:
 
 ```
@@ -153,7 +156,7 @@ The syntax also supports wildcards and negation using special characters :
 * `%` matches any primitive type (does not match `void`) when used alone.
 * `?` matches any one character.
 * `<integer>` integer (starting at 1) referencing the value that matched a wildcard used earlier in the specification. 
-For `-if`-predicated `-keep*` options, the index can reference any earlier wildcard match in the specification for either part.
+For `-if`-predicated `-keep*` rules, the index can reference any earlier wildcard match in the specification for either part.
 Neither R8 nor ProGuard seem to handle back references in the presence of wildcards in both the class name and class member names.
 R8 does not appear to handle back references within member specifications.
 * `...` matches any number of arguments when used within parentheses (`(` and `)`) of a method specification.
@@ -187,15 +190,15 @@ Several other useful constructs recognized in the class specification:
 
 There are several rules which control the naming of classes, methods, and fields:
 
-| Rule                                  |  Description                         |
-|---------------------------------------|--------------------------------------|
-| `-keeppackagenames {filter}`          | Don't rename packages which match the [filter](pg_man#filter). ([ProGuard docs](pg_man#keeppackagenames)) ([See issue](itg/130135768)) |
-| `-flattenpackagehierarchy {name}`     | When renaming a class, move the package containing the class to a common base package `{name}`. Using `-allowaccessmodification` increases the number of classes which can be moved to a new package. ([ProGuard docs](pg_man#flattenpackagehierarchy)) ([See note](#flat_repack_note)) |
-| `-repackageclasses {name}`            | When renaming a class, move it to package `{name}`. *(Overrides `-flattenpackagehierarchy`)*  Using `-allowaccessmodification` increases the number of classes which can be moved to a new package. ([ProGuard docs](pg_man#repackageclasses)) ([See note](#flat_repack_note)) |
-| `-overloadaggressively`               | Use the same name as much as possible, even if it may not be allowed by the source language. ([ProGuard docs](pg_man#overloadaggressively)) |
-| `-adaptclassstrings {filter}`         | Update strings containing class names to use the new names. This can be [filtered](pg_man#filter) to only look for strings in certain classes. ([ProGuard docs](pg_man#adaptclassstrings)) |
-| `-adaptresourcefilenames {filter}`    | Rename Java resource files to match renamed classes. This can be [filtered](pg_man#filter) to look at particular files. ([ProGuard docs](pg_man#adaptresourcefilenames)) |
-| `-adaptresourcefilecontents {filter}` | Update Java resource file contents to match renamed classes. This can be [filtered](pg_man#filter) to look at particular files. ([ProGuard docs](pg_man#adaptresourcefilecontents)) |
+| Rule                                    |  Description                         |
+|-----------------------------------------|--------------------------------------|
+| `-keeppackagenames [<filter>]`          | Don't rename packages which match the [filter](pg_man#filter). ([ProGuard docs](pg_man#keeppackagenames)) ([See issue](itg/130135768)) |
+| `-flattenpackagehierarchy [<name>]`     | When renaming a class, move the package containing the class to a common base package with the specified name, or to the default package if no name is specified. Using [`-allowaccessmodification`](#general-rules) increases the number of classes which can be moved to a new package. ([ProGuard docs](pg_man#flattenpackagehierarchy)) ([See note](#flat_repack_note)) |
+| `-repackageclasses [<name>]`            | When renaming a class, move it to the named package, or to the default package if no package is named. *(Overrides `-flattenpackagehierarchy`)*  Using [`-allowaccessmodification`](#general-rules) increases the number of classes which can be moved to a new package. ([ProGuard docs](pg_man#repackageclasses)) ([See note](#flat_repack_note)) |
+| `-overloadaggressively`                 | Use the same name as much as possible, even if it may not be allowed by the source language. ([ProGuard docs](pg_man#overloadaggressively)) |
+| `-adaptclassstrings [<filter>]`         | Update strings containing class names to use the new names. This can be [filtered](pg_man#filter) to only look for strings in certain classes. ([ProGuard docs](pg_man#adaptclassstrings)) |
+| `-adaptresourcefilenames [<filter>]`    | Rename Java resource files to match renamed classes. This can be [filtered](pg_man#filter) to look at particular files. ([ProGuard docs](pg_man#adaptresourcefilenames)) |
+| `-adaptresourcefilecontents [<filter>]` | Update Java resource file contents to match renamed classes. This can be [filtered](pg_man#filter) to look at particular files. ([ProGuard docs](pg_man#adaptresourcefilecontents)) |
 
 <a name="flat_repack_note"></a>
 #### Flatten vs. Repackage
@@ -233,9 +236,9 @@ By using dictionaries it is possible to control, to a degree, how R8 will determ
 
 | Rule                                       | Description                     |
 |--------------------------------------------|---------------------------------|
-| `-classobfuscationdictionary {filename}`   | Use the specified [file](#dict_file) to find new names for classes. ([ProGuard docs](pg_man#classobfuscationdictionary)) |
-| `-obfuscationdictionary {filename}`        | Use the specified [file](#dict_file) to find new names for methods and fields. ([ProGuard docs](pg_man#obfuscationdictionary)) |
-| `-packageobfuscationdictionary {filename}` | Use the specified [file](#dict_file) to find new names for packages. ([ProGuard docs](pg_man#packageobfuscationdictionary)) |
+| `-classobfuscationdictionary <filename>`   | Use the specified [file](#dict_file) to find new names for classes. ([ProGuard docs](pg_man#classobfuscationdictionary)) |
+| `-obfuscationdictionary <filename>`        | Use the specified [file](#dict_file) to find new names for methods and fields. ([ProGuard docs](pg_man#obfuscationdictionary)) |
+| `-packageobfuscationdictionary <filename>` | Use the specified [file](#dict_file) to find new names for packages. ([ProGuard docs](pg_man#packageobfuscationdictionary)) |
 
 <a name="dict_file"></a>
 
@@ -243,7 +246,7 @@ By using dictionaries it is possible to control, to a degree, how R8 will determ
 
 The dictionary files contain lists of unique names separated by whitespace or punctuation.
 A `#` can be used to specify a comment.
-The `{filename}` specified should be relative to the directory containing the rules file.
+The filename specified should be relative to the directory containing the rules file.
 The names must consist of characters allowed for Java identifiers.
 
 ```
@@ -262,34 +265,34 @@ y
 
 Map files contain direct links between the original and new names of classes, methods, and fields.
 
-| Rule                       | Description                                     |
-|----------------------------|-------------------------------------------------|
-| `-applymapping {filename}` | Use the specified map for renaming. ([ProGuard docs](pg_man#applymapping)) ([See issue](itg/130132888)) |
-| `-printmapping {filename}` | Print a mapping from the original to the new names. ([ProGuard docs](pg_man#printmapping)) ([See note](#printmapping)) |
+| Rule                         | Description                                   |
+|------------------------------|-----------------------------------------------|
+| `-applymapping <filename>`   | Use the specified map for renaming. ([ProGuard docs](pg_man#applymapping)) ([See issue](itg/130132888)) |
+| `-printmapping [<filename>]` | Print a mapping from the original to the new names to the specified file, or to stdout if there is no file specified.  ([ProGuard docs](pg_man#printmapping)) ([See note](#printmapping)) |
 
 <a name="printmapping"></a>
 
 #### -printmapping
 
 Regardless of the `-printmapping` rule, maps will always be output to a variant specific file (e.g.`build/outputs/mapping[/r8][/{flavorName}]/{buildType}/mapping.txt`).
-If `-printmapping` is in a configuration that is used by more that one variant, the configured file will be overwritten to reflect whichever variant built last.
+If `-printmapping` is configured to print to a file in a configuration that is used by more that one variant, the configured file will be overwritten to reflect whichever variant built last.
 
-## Unsupported Options
+## Unsupported Rules
 
-Some ProGuard options are unsupported by R8 and will not be honored.
+Some ProGuard rules are unsupported by R8 and will not be honored.
 
-The following settings will cause R8 to issue an error:
+The following rules will cause R8 to issue an error:
 
 * `-microedition`
 * `-skipnonpubliclibraryclasses`
-* `includecode` (modifier used with `-keep*` options)
+* `includecode` (modifier used with `-keep*` rules)
 
-The following settings will cause R8 to issue a warning message:
+The following rules will cause R8 to issue a warning message:
 
 * `-optimizationpasses` (enabled by `proguard-android-optimize.txt`)
 * `-optimizations`
 
-The following settings are ignored:
+The following rules are ignored:
 
 * `-addconfigurationdebugging`
 * `-android`
@@ -312,11 +315,11 @@ The following settings are ignored:
 ### Not Applicable
 
 R8 is designed for use with Android projects.
-However some options it supports are not applicable in Android projects:
+However some rules it supports are not applicable in Android projects:
 
 | Rule                            | Description                                |
 |---------------------------------|--------------------------------------------|
-| `-keepdirectories {filter}`     | Keep directory entries in the output jar or zip file. ([ProGuard rules](pg_man#keepdirectories)) |
+| `-keepdirectories [<filter>]`   | Keep directory entries in the output jar or zip file. ([ProGuard rules](pg_man#keepdirectories)) |
 
 
 ## Troubleshooting
@@ -334,14 +337,14 @@ See [Enabling R8](#enabling) for details.
 
 ### D8: Unsupported option: -skipnonpubliclibraryclasses
 
-This option is [unsupported in R8](#unsupported-options).
+This rule is [unsupported in R8](#unsupported-rules).
 Remove it from your configuration.
 
 ### Unexpected java.lang.ClassNotFoundException at runtime
 
 Assuming that this occurs only when you are using R8 (or ProGuard), R8 has not detected that the class described in the exception message is used or has renamed it in a way that breaks reflection calls.
 R8 detects most straightforward reflection calls, but doesn't necessarily catch all cases.
-Use a [`-keep`](#keep_options) rule to prevent the class from being removed or renamed.
+Use a [`-keep`](#keep_rules) rule to prevent the class from being removed or renamed.
 
 ### Custom rules don't appear to be used
 
