@@ -118,6 +118,13 @@ These rules are configured by proving a [class specification](#class_spec) and o
 | `-whyareyoukeeping <class-spec>`                             | Log details about why particular classes and members were maintained in the output. ([ProGuard docs](pg_man#whyareyoukeeping)) |
 | `-if <class-spec> <one-keep-rule>`                           | Conditionally apply one keep rule. If class members are specified, the class and all specified members must match. Otherwise, only the class need match. Class specification in the keep rule can contain back references to wildcards in the `-if` class specification. ([ProGuard docs](pg_man#if)) |
 
+>**NOTE:** R8's optimization may collapse parts of a class hierarcy.
+For example, if an interface can be replaced everywhere with the only class that implements it, R8's optimizer might do this.
+This can effectively change field and method signatures.
+If this happens, fields and methods referenced in class specifications for `-keep*` rules may not match.
+Conversely, some `-keep` options will effectively tell R8 not to alter the hierarchy.
+This issue has been observed with use of `-keepnames` ([See issue](itg/130791310)).
+
 <a name="modifiers"></a>
 Keep rule modifiers:
 
