@@ -122,7 +122,7 @@ These rules are configured by proving a [class specification](#class_spec) and o
 For example, if an interface can be replaced everywhere with the only class that implements it, R8's optimizer might do this.
 This can effectively change field and method signatures.
 If this happens, fields and methods referenced in class specifications for `-keep*` rules may not match.
-Conversely, some `-keep` options will effectively tell R8 not to alter the hierarchy.
+Conversely, some `-keep*` rules will effectively tell R8 not to alter the hierarchy.
 This issue has been observed with use of `-keepnames` ([See issue](itg/130791310)).
 
 <a name="modifiers"></a>
