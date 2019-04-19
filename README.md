@@ -24,14 +24,14 @@ The [Android Studio documentation](https://developer.android.com/studio/build/sh
 As [we make an Android Obfuscator](https://www.preemptive.com/products/dasho/overview), we think it's important to understand the distinction between *Obfuscation*, *Renaming*, *Shrinking*, and *Minification*.
 
 * *Obfuscation* generally refers to a broad set of techniques that make code more difficult to understand and reverse engineer, but in the context of R8 rules and documentation it specifically refers to *Renaming* of packages, classes, methods, and fields that R8 performs.
-  R8 employs renaming primarily to reduce the size of the application or library on which it is operating, not to protect it from reverse engineering. 
+  R8 employs renaming primarily to reduce the size of the application or library on which it is operating, not to protect it from reverse engineering.
   We avoid using the term "obfuscation" in this documentation in favor of "renaming".
 * *Code Shrinking* or *Tree Shaking* refers to the removal of unused classes and members from your application or library, primarily to reduce its size.
 * *Minification*, as in `minifyEnabled`, is sometimes used to describe the combination of Shrinking and Renaming for the purpose of reducing the size of an application or library.
 
 In addition to Renaming and Code Shrinking, R8 also performs *Optimization*, which rewrites code to improve its performance and further reduce its size.
-The Android Gradle Plugin also performs *Resource Shrinking*, which reduces the size of resources in a similiar manner to the way that Code Shrinking reduces the size of applications or libraries. 
-This is not a feature of R8 itself, but they are related processes; the Android Gradle Plugin requires that you enable a code shrinker to shrink resources. 
+The Android Gradle Plugin also performs *Resource Shrinking*, which reduces the size of resources in a similiar manner to the way that Code Shrinking reduces the size of applications or libraries.
+This is not a feature of R8 itself, but they are related processes; the Android Gradle Plugin requires that you enable a code shrinker to shrink resources.
 
 In addition to Renaming, a comprehensive obfuscation solution would include [Control Flow Obfuscation](https://www.preemptive.com/products/dasho/features#controlflow) and [String Encryption](https://www.preemptive.com/products/dasho/features#string).
 A more complete application protection solution would also include active Checks, such as [Root Checks](https://www.preemptive.com/products/dasho/features#rootcheck), [Debugging Checks](https://www.preemptive.com/products/dasho/features#debug), [Emulator Checks](https://www.preemptive.com/products/dasho/features#emulatorcheck), and [Tamper Checks](https://www.preemptive.com/products/dasho/features/#tamper).
@@ -78,7 +78,7 @@ Keep rule modifiers:
 | `allowobfuscation`               | Allow the target(s) of the rule to be renamed. Adding this modifier to one of the `-keep*names` rules causes that rule to have no effect. ([ProGuard docs](pg_man#allowobfuscation)) |
 | `includedescriptorclasses`       | Prevent specified field types, method return types, and method parameter types from being renamed. This preserves field and method signatures (post type-erasure, e.g. this does not preserve generic types). ([ProGuard docs](pg_man#includedescriptorclasses)) |
 
->**NOTE:** It is not clear what optimization R8 does, or how much control over that process is provided through the `-keep*` rules and the `allowoptimization` modifier.
+>**Note:** It is not clear what optimization R8 does, or how much control over that process is provided through the `-keep*` rules and the `allowoptimization` modifier.
 
 <a name="class_spec"></a>
 ### Class Specification
@@ -105,7 +105,7 @@ The syntax also supports wildcards and negation using special characters :
 * `***` a sequence of zero or more characters, including package separators (`.`), when used with other symbols in a pattern. Matches any reference type, primitive type, or `void` when used alone.
 * `%` matches any primitive type (does not match `void`) when used alone.
 * `?` matches any one character.
-* `<integer>` integer (starting at 1) referencing the value that matched a wildcard used earlier in the specification. 
+* `<integer>` integer (starting at 1) referencing the value that matched a wildcard used earlier in the specification.
 For `-if`-predicated `-keep*` rules, the index can reference any earlier wildcard match in the specification for either part.
 Neither R8 nor ProGuard seem to handle back references in the presence of wildcards in both the class name and class member names.
 R8 does not appear to handle back references within member specifications.
@@ -133,7 +133,7 @@ Several other useful constructs recognized in the class specification:
 * `<fields>;` is a special string representing all fields
 * `<methods>;` is a special string representing all methods
 
->**NOTE:** There are some differences between how the filter syntax is interpreted by R8 and ProGuard.
+>**Note:** There are some differences between how the filter syntax is interpreted by R8 and ProGuard.
 > For example, `*;` represents all fields and methods in both, but only R8 recognizes `* *;` (all fields) and `* *(...);` (all methods).
 
 ## Renaming Configuration
@@ -217,11 +217,24 @@ Map files contain direct links between the original and new names of classes, me
 
 | Rule                         | Description                                   |
 |------------------------------|-----------------------------------------------|
-| `-applymapping <filename>`   | Use the specified map for renaming. ([ProGuard docs](pg_man#applymapping)) ([See issue](itg/130132888)) |
+| `-applymapping <filename>`   | Use the specified map for renaming. R8 is [incompatible](#applymapping) with ProGuard's behavior for this rule. ([ProGuard docs](pg_man#applymapping)) ([See issue](itg/130132888)) |
 | `-printmapping [<filename>]` | Print a mapping from the original to the new names to the specified file, or to stdout if there is no file specified.  ([ProGuard docs](pg_man#printmapping)) ([See note](#printmapping)) |
 
-<a name="printmapping"></a>
+<a name="applymapping"></a>
+#### -applymapping
 
+The `-applymapping` rule should force R8 to use the names from the map when assigning new names.
+There are some [issues](itg/130132888) with how R8 handles `-applymapping`:
+
+1. R8 will not honor names provided if there is no specific `-keep` rule in place for that class, method, or field.
+2. R8 outputs a corrupt `mapping.txt` file when `-applymapping` is used.
+
+Google is [not supporting](itg/130132888) this rule for incremental renaming, so it should be used carefully.
+If you need a specific name given to a class, method, or field, you need to configure both `-applymapping` and `-keep`.
+
+>**Note**: Do **NOT** use `-keep,allowobfuscation` in this scenario because R8 will not honor the new names from the map using that configuration.
+
+<a name="printmapping"></a>
 #### -printmapping
 
 Regardless of the `-printmapping` rule, maps will always be output to a variant specific file (e.g.`build/outputs/mapping[/r8][/{flavorName}]/{buildType}/mapping.txt`).
@@ -301,5 +314,5 @@ See the [Android Studio User Guide](https://developer.android.com/studio/build/s
 
 R8 issues this warning if you use an `extends` rule to match descendents of an interface rather than `implements`, regardless of whether the descendents you're trying to match are classes or interfaces.
 If the specified rule is a custom rule that you have created, you can update the rule to use `implements` rather than `extends`.
-However, some libraries, including Android support libraries, contain rules that will produce this warning. 
+However, some libraries, including Android support libraries, contain rules that will produce this warning.
 Unfortunately, there is no easy way to resolve or suppress the warning in that case.
