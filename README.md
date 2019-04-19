@@ -217,7 +217,7 @@ Map files contain direct links between the original and new names of classes, me
 
 | Rule                         | Description                                   |
 |------------------------------|-----------------------------------------------|
-| `-applymapping <filename>`   | Use the specified map for renaming. This rule does [**not work**](#applymapping) as expected. ([ProGuard docs](pg_man#applymapping)) ([See issue](itg/130132888)) |
+| `-applymapping <filename>`   | Use the specified map for renaming. R8 is [incompatible](#applymapping) with ProGuard's behavior for this rule. ([ProGuard docs](pg_man#applymapping)) ([See issue](itg/130132888)) |
 | `-printmapping [<filename>]` | Print a mapping from the original to the new names to the specified file, or to stdout if there is no file specified.  ([ProGuard docs](pg_man#printmapping)) ([See note](#printmapping)) |
 
 <a name="applymapping"></a>
@@ -229,10 +229,9 @@ There are some [issues](itg/130132888) with how R8 handles `-applymapping`:
 1. R8 will not honor names provided if there is no specific `-keep` rule in place for that class, method, or field.
 2. R8 outputs a corrupt `mapping.txt` file when `-applymapping` is used.
 
-If you need a specific name given to a class, method, or field, you need to configure both `-applymapping` and `-keep` (or `-keepnames`).
+If you need a specific name given to a class, method, or field, you need to configure both `-applymapping` and `-keep`.
 
->**Note**: ProGuard will issue warnings when combining `-keep` (or `-keepnames`) and `-applymapping`, but will not issue warnings with `-keep,allowobfuscation`.
->Do **NOT** use `-keep,allowobfuscation` as R8 will not honor the new names from the map with that configuration.
+>**Note**: Do **NOT** use `-keep,allowobfuscation` in this scenario because R8 will not honor the new names from the map using that configuration.
 
 <a name="printmapping"></a>
 #### -printmapping
