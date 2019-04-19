@@ -221,7 +221,6 @@ Map files contain direct links between the original and new names of classes, me
 | `-printmapping [<filename>]` | Print a mapping from the original to the new names to the specified file, or to stdout if there is no file specified.  ([ProGuard docs](pg_man#printmapping)) ([See note](#printmapping)) |
 
 <a name="applymapping"></a>
-
 #### -applymapping
 
 The `-applymapping` rule should force R8 to use the names from the map when assigning new names.
@@ -236,7 +235,6 @@ If you need a specific name given to a class, method, or field, you need to conf
 >Do **NOT** use `-keep,allowobfuscation` as R8 will not honor the new names from the map with that configuration.
 
 <a name="printmapping"></a>
-
 #### -printmapping
 
 Regardless of the `-printmapping` rule, maps will always be output to a variant specific file (e.g.`build/outputs/mapping[/r8][/{flavorName}]/{buildType}/mapping.txt`).
