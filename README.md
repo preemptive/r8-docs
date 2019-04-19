@@ -1,9 +1,9 @@
 ## Introduction
 
 This is unofficial documentation for [R8](https://android-developers.googleblog.com/2018/11/r8-new-code-shrinker-from-google-is.html), Google's code shrinker for Android&trade;.
-Google intends R8 to be a drop-in replacement for [ProGuard](https://www.guardsquare.com/en/products/proguard), and, as R8 is designed to be compatible with most ProGuard rules, the [ProGuard Manual](pg_man) is a valuable reference for R8.
-However, there still are substantial differences between R8 and ProGuard, and Google has not documented those differences.
-This site is meant to fill that gap.
+Google intends R8 to be a drop-in replacement for [ProGuard](https://www.guardsquare.com/en/products/proguard), and has provided [documentation in the Android Studio User Guide](https://developer.android.com/studio/build/shrink-code) to help you get started with it.
+However, they rely on the [ProGuard Manual](pg_man) for detailed documentation, even though there are substantial differences between R8 and ProGuard.
+This documentation is meant to supplement the Android Studio User Guide and the ProGuard Manual to fill that gap.
 
 This site is [open source on GitHub&trade;](https://github.com/preemptive/r8-docs) and we encourage you to contribute by opening [issues](https://github.com/preemptive/r8-docs/issues) or submitting pull requests.
 
@@ -12,79 +12,29 @@ This site is [open source on GitHub&trade;](https://github.com/preemptive/r8-doc
 This documentation assumes that you are using the standard Gradle&trade; build process of an Android application or library with version 3.4 or later of the Android Gradle Plugin.
 It is not suitable if you are using R8 directly in a custom build process.
 
->**Note:** Known issues reflected in this document were last tested on R8 v1.4.77 using Android Gradle Plugin v3.4.0-rc03.
+>**Note:** Known issues reflected in this document were last tested on R8 v1.4.77 using Android Gradle Plugin v3.4.0.
 
 ### Who We Are
 
 [PreEmptive Solutions](https://www.preemptive.com) is the developer of [PreEmptive Protection&trade; - DashO&trade;](https://www.preemptive.com/products/dasho/overview), which provides powerful obfuscation and shielding for Android applications and libraries.
 
-<a name="enabling"></a>
-## Enabling R8
+### Obfuscation, Shrinking, Renaming, and Minification - What's the Difference?
 
-You can enable R8 in your Android project for a build type by using the `minifyEnabled` setting in your application's or library's Gradle build script:
+The [Android Studio documentation](https://developer.android.com/studio/build/shrink-code) and the R8 ruleset itself use the term "obfuscation" in a way that isn't very precise.
+As [we make an Android Obfuscator](https://www.preemptive.com/products/dasho/overview), we think it's important to understand the distinction between *Obfuscation*, *Renaming*, *Shrinking*, and *Minification*.
 
-```gradle
-android {
-    buildTypes {
-        release {
-            minifyEnabled true
-        }
-    }
-}
-```
+* *Obfuscation* generally refers to a broad set of techniques that make code more difficult to understand and reverse engineer, but in the context of R8 rules and documentation it specifically refers to *Renaming* of packages, classes, methods, and fields that R8 performs.
+  R8 employs renaming primarily to reduce the size of the application or library on which it is operating, not to protect it from reverse engineering. 
+  We avoid using the term "obfuscation" in this documentation in favor of "renaming".
+* *Code Shrinking* or *Tree Shaking* refers to the removal of unused classes and members from your application or library, primarily to reduce its size.
+* *Minification*, as in `minifyEnabled`, is sometimes used to describe the combination of Shrinking and Renaming for the purpose of reducing the size of an application or library.
 
-R8 defaults to using ProGuard-compatible optimizations, but you can enable additional optimizations by enabling R8's *Full Mode* in your `gradle.properties` file ([Learn More](https://android-developers.googleblog.com/2018/11/r8-new-code-shrinker-from-google-is.html)):
+In addition to Renaming and Code Shrinking, R8 also performs *Optimization*, which rewrites code to improve its performance and further reduce its size.
+The Android Gradle Plugin also performs *Resource Shrinking*, which reduces the size of resources in a similiar manner to the way that Code Shrinking reduces the size of applications or libraries. 
+This is not a feature of R8 itself, but they are related processes; the Android Gradle Plugin requires that you enable a code shrinker to shrink resources. 
 
-```properties
-android.enableR8.fullMode=true
-```
-
-<a name="specifying"></a>
-### Specifying R8 Configuration Files
-
-You can specify any number of R8 configuration files for a build type or product flavor using the `proguardFiles` setting in your application's or library's Gradle build script:
-
-```gradle
-android {
-    buildTypes {
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'custom-rules.txt'
-        }
-    }
-}
-```
-
-The `getDefaultProguardFile()` method specifies a configuration file provided by the Android Gradle Plugin that contains basic rules suitable for Android builds.
-You can use `'proguard-android.txt'` for the default rule set used by the Android Gradle Plugin, or `'proguard-android-optimize.txt'` to enable optimization.
-
-You can find these default files in the `build/intermediates/proguard-files` directory within your application or library module's directory after running a build.
-Note that while the files in this `proguard-rules` directory have version numbers affixed to their name, you should not include these version numbers in the file name in your Gradle build script.
-
-In this example, `'custom-rules.txt'` refers to a configuration file named "custom-rules.txt" in the same directory as your application's or library's `build.gradle` file.
-You can specify your own R8 rules in such a file.
-
-<a name="rules_note"></a>
->**NOTE:** The Android Gradle Plugin will generate additional rules based on references to classes in your application's or library's manifest and resources.
->If no `proguardFile` or `proguardFiles` configuration is provided, R8 will also add the configuration from the default `proguard-android.txt` file.
-
-You can also configure flavor specific rules using `proguardFile`:
-
-```gradle
-android {
-    flavorDimensions 'monetization'
-    productFlavors {
-        free {
-            dimension 'monetization'
-            proguardFile 'free-rules.txt'
-        }
-        paid {
-            dimension 'monetization'
-            proguardFile 'paid-rules.txt'
-        }
-    }
-}
-```
+In addition to Renaming, a comprehensive obfuscation solution would include [Control Flow Obfuscation](https://www.preemptive.com/products/dasho/features#controlflow) and [String Encryption](https://www.preemptive.com/products/dasho/features#string).
+A more complete application protection solution would also include active Checks, such as [Root Checks](https://www.preemptive.com/products/dasho/features#rootcheck), [Debugging Checks](https://www.preemptive.com/products/dasho/features#debug), [Emulator Checks](https://www.preemptive.com/products/dasho/features#emulatorcheck), and [Tamper Checks](https://www.preemptive.com/products/dasho/features/#tamper).
 
 ## General Rules
 
@@ -321,8 +271,12 @@ However some rules it supports are not applicable in Android projects:
 |---------------------------------|--------------------------------------------|
 | `-keepdirectories [<filter>]`   | Keep directory entries in the output jar or zip file. ([ProGuard rules](pg_man#keepdirectories)) |
 
-
 ## Troubleshooting
+
+This section describes some issues that you might encounter when trying to use R8.
+You might also find details about your issue in the [Android Studio User Guide](https://developer.android.com/studio/build/shrink-code#troubleshoot), the [R8 Compatibility FAQ](https://r8.googlesource.com/r8/+/refs/heads/master/compatibility-faq.md), or [ProGuard's Troubleshooting page](https://www.guardsquare.com/en/products/proguard/manual/troubleshooting).
+
+If you cannot find a solution to your problem, or if you otherwise encounter incorrect behavior, you can [report a bug](https://issuetracker.google.com/issues/new?component=326788&template=1025938) with the Google team.
 
 ### ProGuard appears to be running instead of R8
 
@@ -330,32 +284,22 @@ Make sure that you do not have `android.enableR8=false` in your `gradle.properti
 
 >**Note:** If you are using a version of the Android Gradle Plugin prior to 3.4, you will need to set `android.enableR8=true` in your `gradle.properties` file to enable R8.
 
-### Neither R8 nor ProGuard appears to be enabled
-
-Make sure that you have set `minifyEnabled` for all of the build types on which you want R8 to run.
-See [Enabling R8](#enabling) for details.
-
 ### D8: Unsupported option: -skipnonpubliclibraryclasses
 
 This rule is [unsupported in R8](#unsupported-rules).
 Remove it from your configuration.
 
-### Unexpected java.lang.ClassNotFoundException at runtime
-
-Assuming that this occurs only when you are using R8 (or ProGuard), R8 has not detected that the class described in the exception message is used or has renamed it in a way that breaks reflection calls.
-R8 detects most straightforward reflection calls, but doesn't necessarily catch all cases.
-Use a [`-keep`](#keep_rules) rule to prevent the class from being removed or renamed.
-
 ### Custom rules don't appear to be used
 
-Make sure that any rule file that you want to use is properly configured in your Gradle build script with `proguardFiles` or `proguardFile`.
+Make sure that any rule file that you want to use is properly configured in your Gradle build script with `proguardFiles`.
 Relative paths configured in your Gradle build script should be relative to the application or library module for which you would like the rules to apply.
-See [Specifying R8 Configuration Files](#specifying) for details.
+See the [Android Studio User Guide](https://developer.android.com/studio/build/shrink-code) for details.
 
 >**Note:** The Android Gradle Plugin will not error or warn you if it cannot locate the specified file.
 
-### The rule [some rule] uses extends but actually matches implements.
+### The rule [some rule] uses extends but actually matches implements
 
 R8 issues this warning if you use an `extends` rule to match descendents of an interface rather than `implements`, regardless of whether the descendents you're trying to match are classes or interfaces.
 If the specified rule is a custom rule that you have created, you can update the rule to use `implements` rather than `extends`.
-However, some libraries, including Android support libraries, contain rules that will produce this warning and unfortunately there is no easy way to resolve or suppress this warning in that case.
+However, some libraries, including Android support libraries, contain rules that will produce this warning. 
+Unfortunately, there is no easy way to resolve or suppress the warning in that case.
