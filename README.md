@@ -229,6 +229,7 @@ There are some [issues](itg/130132888) with how R8 handles `-applymapping`:
 1. R8 will not honor names provided if there is no specific `-keep` rule in place for that class, method, or field.
 2. R8 outputs a corrupt `mapping.txt` file when `-applymapping` is used.
 
+Google is [not supporting](itg/130132888) this rule for incremental renaming, so it should be used carefully.
 If you need a specific name given to a class, method, or field, you need to configure both `-applymapping` and `-keep`.
 
 >**Note**: Do **NOT** use `-keep,allowobfuscation` in this scenario because R8 will not honor the new names from the map using that configuration.
