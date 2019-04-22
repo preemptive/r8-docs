@@ -255,7 +255,7 @@ The following rules will cause R8 to issue an error:
 
 * `-microedition`
 * `-skipnonpubliclibraryclasses`
-* `includecode` (modifier used with `-keep*` rules)
+* `includecode` (modifier used with `-keep*` rules) ([See issue](itg/73801028))
 
 The following rules will cause R8 to issue a warning message:
 
