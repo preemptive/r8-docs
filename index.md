@@ -14,10 +14,6 @@ It is not suitable if you are using R8 directly in a custom build process.
 
 >**Note:** Known issues reflected in this document were last tested on R8 v1.4.77 using Android Gradle Plugin v3.4.0.
 
-### Who We Are
-
-[PreEmptive Solutions](https://www.preemptive.com) is the developer of [PreEmptive Protection&trade; - DashO&trade;](https://www.preemptive.com/products/dasho/overview), which provides powerful obfuscation and shielding for Android applications and libraries.
-
 ### Obfuscation, Shrinking, Renaming, and Minification - What's the Difference?
 
 The [Android Studio documentation](https://developer.android.com/studio/build/shrink-code) and the R8 ruleset itself use the term "obfuscation" in a way that isn't very precise.
@@ -33,8 +29,16 @@ In addition to Renaming and Code Shrinking, R8 also performs *Optimization*, whi
 The Android Gradle Plugin also performs *Resource Shrinking*, which reduces the size of resources in a similiar manner to the way that Code Shrinking reduces the size of applications or libraries.
 This is not a feature of R8 itself, but they are related processes; the Android Gradle Plugin requires that you enable a code shrinker to shrink resources.
 
-In addition to Renaming, a comprehensive obfuscation solution would include [Control Flow Obfuscation](https://www.preemptive.com/products/dasho/features#controlflow) and [String Encryption](https://www.preemptive.com/products/dasho/features#string).
-A more complete application protection solution would also include active Checks, such as [Root Checks](https://www.preemptive.com/products/dasho/features#rootcheck), [Debugging Checks](https://www.preemptive.com/products/dasho/features#debug), [Emulator Checks](https://www.preemptive.com/products/dasho/features#emulatorcheck), and [Tamper Checks](https://www.preemptive.com/products/dasho/features/#tamper).
+### Who We Are
+
+We are [PreEmptive Solutions](https://www.preemptive.com).
+We believe a comprehensive obfuscation solution **must** do more than just minification.
+We make [PreEmptive Protection&trade; - DashO&trade;](https://www.preemptive.com/products/dasho/overview), which provides powerful obfuscation and shielding for Android applications and libraries.
+
+The [DashO 10 beta](https://www.preemptive.com/blog/article/1113-dasho-10-beta-2-from-the-ground-up/89-dasho) allows you to leverage DashO’s powerful protection features, including [Control Flow Obfuscation](https://www.preemptive.com/dasho/pro/10.0/userguide/en/understanding_obfuscation_control.html) and [String Encryption](https://www.preemptive.com/dasho/pro/10.0/userguide/en/understanding_obfuscation_string_encryption.html), without sacrificing R8's features and build performance.
+It also includes active Checks, such as [Root Checks](https://www.preemptive.com/dasho/pro/10.0/userguide/en/understanding_checks_root.html), [Debugging Checks](https://www.preemptive.com/dasho/pro/10.0/userguide/en/understanding_checks_debug.html), [Emulator Checks](https://www.preemptive.com/dasho/pro/10.0/userguide/en/understanding_checks_emulator.html), and [Tamper Checks](https://www.preemptive.com/dasho/pro/10.0/userguide/en/understanding_checks_tamper.html).
+
+>**Download a [free trial](https://www.preemptive.com/dasho-10-beta-2) of the DashO 10 beta which includes our world-class support.**
 
 ## General Rules
 
