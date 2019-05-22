@@ -98,9 +98,10 @@ Several of the rules accept a class specification (`class-spec`) which is a spec
 For example:
 
 ```
--keepclassmembernames class some.path.to.MyClass {
+-keepclassmembernames public class some.path.to.MyClass {
     int intField;
     android.content.Context getApplicationContext();
+    public static String *;
 }
 ```
 
@@ -108,9 +109,11 @@ The syntax has strong support for filtering classes, methods, and fields.
 The syntax supports `class` (classes), `interface` (interfaces), `enum` (enumerations), and `@interface` (annotations).
 The special symbol `<init>` is used to represent the name of a class's constructor.
 
-The syntax also supports wildcards and negation using special characters :
+#### Wildcards and Special Characters
 
-* `!` negates the condition described by the subsequent specification.
+The syntax also supports wildcards and negation using special characters:
+
+* `!` negates the condition described by the subsequent specification. Can be used with [modifiers](#class-spec-modifiers) and with the `class`, `interface`, `enum`, and `@interface` keywords.
 * `*` a sequence of zero or more characters, other than package separators (`.`), when used with other symbols in a pattern. Matches any reference type when used alone (this is not supported in all contexts in ProGuard).
 * `**` a sequence of zero or more characters, including package separators (`.`), when used with other symbols in a pattern. Matches any reference type when used alone (does not match primitive types or `void`).
 * `***` a sequence of zero or more characters, including package separators (`.`), when used with other symbols in a pattern. Matches any reference type, primitive type, or `void` when used alone.
@@ -128,7 +131,50 @@ For example:
 -keepclassmembernames class * { long *UUID; } # don't rename long-valued fields ending with UUID in classes
 ```
 
-Note that R8 does not currently respect negation (`!`) of class member expressions in class specifications for the `-if`, `-keepclasseswithmembers`, and `-keepclasseswithmembernames` ([See issue](itg/130665986)).
+Several other useful constructs are recognized in the class specification:
+
+* `<fields>;` is a special string representing all fields
+* `<methods>;` is a special string representing all methods
+
+>**Note:** There are some differences between how the filter syntax is interpreted by R8 and ProGuard.
+> For example, `*;` represents all fields and methods in both, but only R8 recognizes `* *;` (all fields) and `* *(...);` (all methods).
+
+<a name="class-spec-modifiers"></a>
+#### Modifiers
+
+You can use the following modifier keywords to narrow down wildcards used in class specifications:
+
+<div class="modifier-table"></div>
+
+| Name           | Class | Method | Field | 
+| -------------- | ----- | ------ | ----- |
+| `abstract`     | ✓     | ✓      |       |
+| `final`        | ✓     | ✓      | ✓     |
+| `native`       |       | ✓      |       |
+| `private`      |       | ✓      | ✓     |
+| `protected`    |       | ✓      | ✓     |
+| `public`       | ✓     | ✓      | ✓     |
+| `static`       |       | ✓      | ✓     |
+| `strictfp`     |       | ✓      |       |
+| `synchronized` |       | ✓      |       |
+| `transient`    |       |        | ✓     |
+| `volatile`     |       |        | ✓     |
+
+
+If multiple modifiers are used together on a single expression, then in most cases only classes, methods, or fields that match all of the applied modifiers will be matched. 
+However, if mutually exclusive modifiers are applied (e.g., `private` and `protected`), classes, method, and fields that match either of the mutually exclusive modifiers may be matched.
+
+For example:
+
+```
+-keep public class * { # All public classes
+    public static *; # All public static fields in those classes
+    public protected abstract *(...); # All public or protected abstract methods in those classes
+}
+    
+```
+
+#### Subtype Matching and Annotated Matching
 
 There are two powerful constructs that can be used with class filtering: subtype matching and annotated matching.
 
@@ -139,13 +185,6 @@ Note that `extends` and `implements` can be used interchangeably.
 Specify an annotation on the type filter to indicate that only types that are annotated with that annotation should match the filter.
 For example, `-keep @some.package.SomeAnnotation interface *` will match all interfaces that are annotated with `@SomeAnnotation`.
 
-Several other useful constructs recognized in the class specification:
-
-* `<fields>;` is a special string representing all fields
-* `<methods>;` is a special string representing all methods
-
->**Note:** There are some differences between how the filter syntax is interpreted by R8 and ProGuard.
-> For example, `*;` represents all fields and methods in both, but only R8 recognizes `* *;` (all fields) and `* *(...);` (all methods).
 
 ## Renaming Configuration
 

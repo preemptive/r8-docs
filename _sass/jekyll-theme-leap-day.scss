@@ -543,3 +543,14 @@ $modifier: 70px;
     width:auto;
   }
 }
+
+.modifier-table + table {
+    tr {
+        td,th {
+            text-align: center;
+        }
+        td:first-child,th:first-child {
+            text-align: left;
+        }
+    }
+}
