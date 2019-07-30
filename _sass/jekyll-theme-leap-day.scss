@@ -276,12 +276,11 @@ header {
   }
   .ps-button {
     position: absolute;
-    right: 7px;
-    top: 7px;
-    right: 10px;
+    top: 0px;
+    right: 0px;
     display: block;
     img {
-        height: 36px;
+        height: 50px;
     }
   }
 }
