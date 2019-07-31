@@ -33,7 +33,7 @@ This is not a feature of R8 itself, but they are related processes; the Android 
 
 We are [PreEmptive Solutions](https://www.preemptive.com).
 We believe a comprehensive obfuscation solution **must** do more than just minification.
-We make [PreEmptive Protection&trade; - DashO&trade;](https://www.preemptive.com/products/dasho/overview), which provides powerful obfuscation and shielding for Android applications and libraries.
+We make [PreEmptive Protection&trade; DashO&trade; for Android & Java](https://www.preemptive.com/products/dasho/overview), which provides powerful obfuscation and shielding for Android applications and libraries.
 
 The [DashO 10 beta](https://www.preemptive.com/blog/article/1113-dasho-10-beta-2-from-the-ground-up/89-dasho) allows you to leverage DashO’s powerful protection features, including [Control Flow Obfuscation](https://www.preemptive.com/dasho/pro/10.0/userguide/en/understanding_obfuscation_control.html) and [String Encryption](https://www.preemptive.com/dasho/pro/10.0/userguide/en/understanding_obfuscation_string_encryption.html), without sacrificing R8's features and build performance.
 It also includes active Checks, such as [Root Checks](https://www.preemptive.com/dasho/pro/10.0/userguide/en/understanding_checks_root.html), [Debugging Checks](https://www.preemptive.com/dasho/pro/10.0/userguide/en/understanding_checks_debug.html), [Emulator Checks](https://www.preemptive.com/dasho/pro/10.0/userguide/en/understanding_checks_emulator.html), and [Tamper Checks](https://www.preemptive.com/dasho/pro/10.0/userguide/en/understanding_checks_tamper.html).
