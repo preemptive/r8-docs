@@ -35,10 +35,10 @@ We are [PreEmptive Solutions](https://www.preemptive.com).
 We believe a comprehensive obfuscation solution **must** do more than just minification.
 We make [PreEmptive Protection&trade; DashO&trade;](https://www.preemptive.com/products/dasho/overview), which provides powerful obfuscation and shielding for Android applications and libraries.
 
-The [DashO 10 beta](https://www.preemptive.com/blog/article/1113-dasho-10-beta-2-from-the-ground-up/89-dasho) allows you to leverage DashO’s powerful protection features, including [Control Flow Obfuscation](https://www.preemptive.com/dasho/pro/10.0/userguide/en/understanding_obfuscation_control.html) and [String Encryption](https://www.preemptive.com/dasho/pro/10.0/userguide/en/understanding_obfuscation_string_encryption.html), without sacrificing R8's features and build performance.
-It also includes active Checks, such as [Root Checks](https://www.preemptive.com/dasho/pro/10.0/userguide/en/understanding_checks_root.html), [Debugging Checks](https://www.preemptive.com/dasho/pro/10.0/userguide/en/understanding_checks_debug.html), [Emulator Checks](https://www.preemptive.com/dasho/pro/10.0/userguide/en/understanding_checks_emulator.html), and [Tamper Checks](https://www.preemptive.com/dasho/pro/10.0/userguide/en/understanding_checks_tamper.html).
+[DashO 10.x](https://www.preemptive.com/blog/article/1133-dasho-10-android-support-rebuilt-from-the-ground-up/89-dasho) allows you to leverage DashO’s powerful protection features, including [Control Flow Obfuscation](https://www.preemptive.com/dasho/pro/10.3/userguide/en/understanding_obfuscation_control.html), [String Encryption](https://www.preemptive.com/dasho/pro/10.3/userguide/en/understanding_obfuscation_string_encryption.html) and [Resource Encryption](https://www.preemptive.com/dasho/pro/10.3/userguide/en/understanding_obfuscation_resource_encryption.html), without sacrificing R8's features and build performance.
+It also includes active Checks, such as [Root Checks](https://www.preemptive.com/dasho/pro/10.3/userguide/en/understanding_checks_root.html), [Debugging Checks](https://www.preemptive.com/dasho/pro/10.3/userguide/en/understanding_checks_debug.html), [Emulator Checks](https://www.preemptive.com/dasho/pro/10.3/userguide/en/understanding_checks_emulator.html), and [Tamper Checks](https://www.preemptive.com/dasho/pro/10.3/userguide/en/understanding_checks_tamper.html).
 
->**Download a [free trial](https://www.preemptive.com/dasho-10-beta-2) of the DashO 10 beta which includes our world-class support.**
+>**Download a [free trial](https://www.preemptive.com/products/dasho/downloads) of DashO 10 which includes our world-class support.**
 
 ## General Rules
 
@@ -146,7 +146,7 @@ You can use the following modifier keywords to narrow down wildcards used in cla
 
 <div class="modifier-table"></div>
 
-| Name           | Class | Method | Field | 
+| Name           | Class | Method | Field |
 | -------------- | ----- | ------ | ----- |
 | `abstract`     | ✓     | ✓      |       |
 | `final`        | ✓     | ✓      | ✓     |
@@ -161,7 +161,7 @@ You can use the following modifier keywords to narrow down wildcards used in cla
 | `volatile`     |       |        | ✓     |
 
 
-If multiple modifiers are used together on a single expression, then in most cases only classes, methods, or fields that match all of the applied modifiers will be matched. 
+If multiple modifiers are used together on a single expression, then in most cases only classes, methods, or fields that match all of the applied modifiers will be matched.
 However, if mutually exclusive modifiers are applied (e.g., `private` and `protected`), classes, method, and fields that match either of the mutually exclusive modifiers may be matched.
 
 For example:
@@ -171,7 +171,7 @@ For example:
     public static *; # All public static fields in those classes
     public protected abstract *(...); # All public or protected abstract methods in those classes
 }
-    
+
 ```
 
 #### Subtype Matching and Annotated Matching
