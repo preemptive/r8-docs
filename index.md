@@ -12,7 +12,7 @@ This site is [open source on GitHub&trade;](https://github.com/preemptive/r8-doc
 This documentation assumes that you are using the standard Gradle&trade; build process of an Android application or library with version 3.4 or later of the Android Gradle Plugin.
 It is not suitable if you are using R8 directly in a custom build process.
 
->**Note:** Known issues reflected in this document were last tested on R8 v1.4.77 using Android Gradle Plugin v3.4.0.
+>**Note:** Known issues reflected in this document were last tested on R8 v1.6.67 using Android Gradle Plugin v3.6.1.
 
 ### Obfuscation, Shrinking, Renaming, and Minification - What's the Difference?
 
@@ -35,8 +35,8 @@ We are [PreEmptive Solutions](https://www.preemptive.com).
 We believe a comprehensive obfuscation solution **must** do more than just minification.
 We make [PreEmptive Protection&trade; DashO&trade;](https://www.preemptive.com/products/dasho/overview), which provides powerful obfuscation and shielding for Android applications and libraries.
 
-[DashO 10.x](https://www.preemptive.com/blog/article/1133-dasho-10-android-support-rebuilt-from-the-ground-up/89-dasho) allows you to leverage DashO’s powerful protection features, including [Control Flow Obfuscation](https://www.preemptive.com/dasho/pro/10.3/userguide/en/understanding_obfuscation_control.html), [String Encryption](https://www.preemptive.com/dasho/pro/10.3/userguide/en/understanding_obfuscation_string_encryption.html) and [Resource Encryption](https://www.preemptive.com/dasho/pro/10.3/userguide/en/understanding_obfuscation_resource_encryption.html), without sacrificing R8's features and build performance.
-It also includes active Checks, such as [Root Checks](https://www.preemptive.com/dasho/pro/10.3/userguide/en/understanding_checks_root.html), [Debugging Checks](https://www.preemptive.com/dasho/pro/10.3/userguide/en/understanding_checks_debug.html), [Emulator Checks](https://www.preemptive.com/dasho/pro/10.3/userguide/en/understanding_checks_emulator.html), and [Tamper Checks](https://www.preemptive.com/dasho/pro/10.3/userguide/en/understanding_checks_tamper.html).
+[DashO 10.x](https://www.preemptive.com/blog/article/1133-dasho-10-android-support-rebuilt-from-the-ground-up/89-dasho) allows you to leverage DashO’s powerful protection features, including [Control Flow Obfuscation](DashO_docs/understanding_obfuscation_control.html), [String Encryption](DashO_docs/understanding_obfuscation_string_encryption.html) and [Resource Encryption](DashO_docs/understanding_obfuscation_resource_encryption.html), without sacrificing R8's features and build performance.
+It also includes active Checks, such as [Root Checks](DashO_docs/understanding_checks_root.html), [Debugging Checks](DashO_docs/understanding_checks_debug.html), [Emulator Checks](DashO_docs/understanding_checks_emulator.html), and [Tamper Checks](DashO_docs/understanding_checks_tamper.html).
 
 >**Download a [free trial](https://www.preemptive.com/products/dasho/downloads) of DashO 10 which includes our world-class support.**
 
@@ -192,7 +192,7 @@ There are several rules which control the naming of classes, methods, and fields
 
 | Rule                                    |  Description                         |
 |-----------------------------------------|--------------------------------------|
-| `-keeppackagenames [<filter>]`          | Don't rename packages which match the [filter](pg_man#filter). ([ProGuard docs](pg_man#keeppackagenames)) ([See issue](itg/130135768)) |
+| `-keeppackagenames [<filter>]`          | Don't rename packages which match the [filter](pg_man#filter). ([ProGuard docs](pg_man#keeppackagenames)) |
 | `-flattenpackagehierarchy [<name>]`     | When renaming a class, move the package containing the class to a common base package with the specified name, or to the default package if no name is specified. Using [`-allowaccessmodification`](#general-rules) increases the number of classes which can be moved to a new package. ([ProGuard docs](pg_man#flattenpackagehierarchy)) ([See note](#flat_repack_note)) |
 | `-repackageclasses [<name>]`            | When renaming a class, move it to the named package, or to the default package if no package is named. *(Overrides `-flattenpackagehierarchy`)*  Using [`-allowaccessmodification`](#general-rules) increases the number of classes which can be moved to a new package. ([ProGuard docs](pg_man#repackageclasses)) ([See note](#flat_repack_note)) |
 | `-overloadaggressively`                 | Use the same name as much as possible, even if it may not be allowed by the source language. ([ProGuard docs](pg_man#overloadaggressively)) |
