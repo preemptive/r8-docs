@@ -12,7 +12,7 @@ This site is [open source on GitHub&trade;](https://github.com/preemptive/r8-doc
 This documentation assumes that you are using the standard Gradle&trade; build process of an Android application or library with version 3.4 or later of the Android Gradle Plugin.
 It is not suitable if you are using R8 directly in a custom build process.
 
->**Note:** Known issues reflected in this document were last tested on R8 v1.4.77 using Android Gradle Plugin v3.4.0.
+>**Note:** Known issues reflected in this document were last tested on R8 v1.6.67 using Android Gradle Plugin v3.6.1.
 
 ### Obfuscation, Shrinking, Renaming, and Minification - What's the Difference?
 
@@ -26,7 +26,7 @@ As [we make an Android Obfuscator](https://www.preemptive.com/products/dasho/ove
 * *Minification*, as in `minifyEnabled`, is sometimes used to describe the combination of Shrinking and Renaming for the purpose of reducing the size of an application or library.
 
 In addition to Renaming and Code Shrinking, R8 also performs *Optimization*, which rewrites code to improve its performance and further reduce its size.
-The Android Gradle Plugin also performs *Resource Shrinking*, which reduces the size of resources in a similiar manner to the way that Code Shrinking reduces the size of applications or libraries.
+The Android Gradle Plugin also performs *Resource Shrinking*, which reduces the size of resources in a similar manner to the way that Code Shrinking reduces the size of applications or libraries.
 This is not a feature of R8 itself, but they are related processes; the Android Gradle Plugin requires that you enable a code shrinker to shrink resources.
 
 ### Who We Are
@@ -35,10 +35,10 @@ We are [PreEmptive Solutions](https://www.preemptive.com).
 We believe a comprehensive obfuscation solution **must** do more than just minification.
 We make [PreEmptive Protection&trade; DashO&trade;](https://www.preemptive.com/products/dasho/overview), which provides powerful obfuscation and shielding for Android applications and libraries.
 
-The [DashO 10 beta](https://www.preemptive.com/blog/article/1113-dasho-10-beta-2-from-the-ground-up/89-dasho) allows you to leverage DashO’s powerful protection features, including [Control Flow Obfuscation](https://www.preemptive.com/dasho/pro/10.0/userguide/en/understanding_obfuscation_control.html) and [String Encryption](https://www.preemptive.com/dasho/pro/10.0/userguide/en/understanding_obfuscation_string_encryption.html), without sacrificing R8's features and build performance.
-It also includes active Checks, such as [Root Checks](https://www.preemptive.com/dasho/pro/10.0/userguide/en/understanding_checks_root.html), [Debugging Checks](https://www.preemptive.com/dasho/pro/10.0/userguide/en/understanding_checks_debug.html), [Emulator Checks](https://www.preemptive.com/dasho/pro/10.0/userguide/en/understanding_checks_emulator.html), and [Tamper Checks](https://www.preemptive.com/dasho/pro/10.0/userguide/en/understanding_checks_tamper.html).
+[DashO 10.x](https://www.preemptive.com/blog/article/1133-dasho-10-android-support-rebuilt-from-the-ground-up/89-dasho) allows you to leverage DashO’s powerful protection features, including [Control Flow Obfuscation](DashO_docs/understanding_obfuscation_control.html), [String Encryption](DashO_docs/understanding_obfuscation_string_encryption.html) and [Resource Encryption](DashO_docs/understanding_obfuscation_resource_encryption.html), without sacrificing R8's features and build performance.
+It also includes active Checks, such as [Root Checks](DashO_docs/understanding_checks_root.html), [Debugging Checks](DashO_docs/understanding_checks_debug.html), [Emulator Checks](DashO_docs/understanding_checks_emulator.html), and [Tamper Checks](DashO_docs/understanding_checks_tamper.html).
 
->**Download a [free trial](https://www.preemptive.com/dasho-10-beta-2) of the DashO 10 beta which includes our world-class support.**
+>**Download a [free trial](https://www.preemptive.com/products/dasho/downloads) of DashO 10 which includes our world-class support.**
 
 ## General Rules
 
@@ -63,7 +63,7 @@ These rules are configured by proving a [class specification](#class_spec) and o
 
 | Rule (and Arguments)                                         | Description   |
 |--------------------------------------------------------------|---------------|
-| `-keep[,<modifier>[...]] <class-spec>`                       | Exclude matching classes, and matching members if specified, from shrinking, optimization, and renaming. Shrinking exclusion on the class means that members will not be removed, but does not prevent members from being renamed. Specifying members will prevent them from being renamed if present. ([ProGuard docs](pg_man#keep)) |
+| `-keep[,<modifier>[...]] <class-spec>`                       | Exclude matching classes, and matching members if specified, from shrinking, optimization, and renaming. Shrinking exclusion on the class means that members will not be removed but does not prevent members from being renamed. Specifying members will prevent them from being renamed if present. ([ProGuard docs](pg_man#keep)) |
 | `-keepclassmembers[,<modifier>[...]] <class-spec>`           | Exclude matching members in matching classes from shrinking, optimization, and renaming. ([ProGuard docs](pg_man#keepclassmembers)) |
 | `-keepclasseswithmembers[,<modifier>[...]] <class-spec>`     | Exclude matching classes and matching members from shrinking, optimization, and renaming if the corresponding class has all of the specified members. ([ProGuard docs](pg_man#keepclasseswithmembers)) |
 | `-keepnames[,<modifier>[...]] <class-spec>`                  | Prevent matching classes, and matching members if specified, from being renamed. ([ProGuard docs](pg_man#keepnames)) |
@@ -75,9 +75,6 @@ These rules are configured by proving a [class specification](#class_spec) and o
 >**Note:** R8's optimization may collapse parts of a class hierarchy.
 For example, if an interface can be replaced everywhere with the only class that implements it, R8's optimizer might do this.
 This can effectively change field and method signatures.
-If this happens, fields and methods referenced in class specifications for `-keep*` rules may not match.
-Conversely, some `-keep*` rules will effectively tell R8 not to alter the hierarchy.
-This issue has been observed with use of `-keepnames` ([See issue](itg/130791310)).
 
 <a name="modifiers"></a>
 Keep rule modifiers:
@@ -146,7 +143,7 @@ You can use the following modifier keywords to narrow down wildcards used in cla
 
 <div class="modifier-table"></div>
 
-| Name           | Class | Method | Field | 
+| Name           | Class | Method | Field |
 | -------------- | ----- | ------ | ----- |
 | `abstract`     | ✓     | ✓      |       |
 | `final`        | ✓     | ✓      | ✓     |
@@ -161,7 +158,7 @@ You can use the following modifier keywords to narrow down wildcards used in cla
 | `volatile`     |       |        | ✓     |
 
 
-If multiple modifiers are used together on a single expression, then in most cases only classes, methods, or fields that match all of the applied modifiers will be matched. 
+If multiple modifiers are used together on a single expression, then in most cases only classes, methods, or fields that match all of the applied modifiers will be matched.
 However, if mutually exclusive modifiers are applied (e.g., `private` and `protected`), classes, method, and fields that match either of the mutually exclusive modifiers may be matched.
 
 For example:
@@ -171,7 +168,7 @@ For example:
     public static *; # All public static fields in those classes
     public protected abstract *(...); # All public or protected abstract methods in those classes
 }
-    
+
 ```
 
 #### Subtype Matching and Annotated Matching
@@ -192,7 +189,7 @@ There are several rules which control the naming of classes, methods, and fields
 
 | Rule                                    |  Description                         |
 |-----------------------------------------|--------------------------------------|
-| `-keeppackagenames [<filter>]`          | Don't rename packages which match the [filter](pg_man#filter). ([ProGuard docs](pg_man#keeppackagenames)) ([See issue](itg/130135768)) |
+| `-keeppackagenames [<filter>]`          | Don't rename packages which match the [filter](pg_man#filter). ([ProGuard docs](pg_man#keeppackagenames)) |
 | `-flattenpackagehierarchy [<name>]`     | When renaming a class, move the package containing the class to a common base package with the specified name, or to the default package if no name is specified. Using [`-allowaccessmodification`](#general-rules) increases the number of classes which can be moved to a new package. ([ProGuard docs](pg_man#flattenpackagehierarchy)) ([See note](#flat_repack_note)) |
 | `-repackageclasses [<name>]`            | When renaming a class, move it to the named package, or to the default package if no package is named. *(Overrides `-flattenpackagehierarchy`)*  Using [`-allowaccessmodification`](#general-rules) increases the number of classes which can be moved to a new package. ([ProGuard docs](pg_man#repackageclasses)) ([See note](#flat_repack_note)) |
 | `-overloadaggressively`                 | Use the same name as much as possible, even if it may not be allowed by the source language. ([ProGuard docs](pg_man#overloadaggressively)) |
@@ -232,7 +229,7 @@ com.example.packageTwo.ClassThree -> go.here.c.a:
 ### Dictionaries
 
 R8 will provide new names by cycling through the English alphabet.
-By using dictionaries it is possible to control, to a degree, how R8 will determine the new names for classes, methods, and fields.
+By using dictionaries, it is possible to control, to a degree, how R8 will determine the new names for classes, methods, and fields.
 
 | Rule                                       | Description                     |
 |--------------------------------------------|---------------------------------|
@@ -267,28 +264,14 @@ Map files contain direct links between the original and new names of classes, me
 
 | Rule                         | Description                                   |
 |------------------------------|-----------------------------------------------|
-| `-applymapping <filename>`   | Use the specified map for renaming. R8 is [incompatible](#applymapping) with ProGuard's behavior for this rule. ([ProGuard docs](pg_man#applymapping)) ([See issue](itg/130132888)) |
+| `-applymapping <filename>`   | Use the specified map for renaming. ([ProGuard docs](pg_man#applymapping)) |
 | `-printmapping [<filename>]` | Print a mapping from the original to the new names to the specified file, or to stdout if there is no file specified.  ([ProGuard docs](pg_man#printmapping)) ([See note](#printmapping)) |
-
-<a name="applymapping"></a>
-#### -applymapping
-
-The `-applymapping` rule should force R8 to use the names from the map when assigning new names.
-There are some [issues](itg/130132888) with how R8 handles `-applymapping`:
-
-1. R8 will not honor names provided if there is no specific `-keep` rule in place for that class, method, or field.
-2. R8 outputs a corrupt `mapping.txt` file when `-applymapping` is used.
-
-Google is [not supporting](itg/130132888) this rule for incremental renaming, so it should be used carefully.
-If you need a specific name given to a class, method, or field, you need to configure both `-applymapping` and `-keep`.
-
->**Note**: Do **NOT** use `-keep,allowobfuscation` in this scenario because R8 will not honor the new names from the map using that configuration.
 
 <a name="printmapping"></a>
 #### -printmapping
 
 Regardless of the `-printmapping` rule, maps will always be output to a variant specific file (e.g.`build/outputs/mapping[/r8][/{flavorName}]/{buildType}/mapping.txt`).
-If `-printmapping` is configured to print to a file in a configuration that is used by more that one variant, the configured file will be overwritten to reflect whichever variant built last.
+If `-printmapping` is configured to print to a file in a configuration that is used by more than one variant, the configured file will be overwritten to reflect whichever variant built last.
 
 ## Unsupported Rules
 
@@ -328,7 +311,7 @@ The following rules are ignored:
 ### Not Applicable
 
 R8 is designed for use with Android projects.
-However some rules it supports are not applicable in Android projects:
+However, some rules it supports are not applicable in Android projects:
 
 | Rule                            | Description                                |
 |---------------------------------|--------------------------------------------|

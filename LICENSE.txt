@@ -1,4 +1,4 @@
-Copyright 2019 PreEmptive Solutions, LLC
+Copyright 2020 PreEmptive Solutions, LLC
 
 PreEmptive Protection and DashO are trademarks of PreEmptive Solutions, LLC.
 Android is a trademark of Google LLC.
