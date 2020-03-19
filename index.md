@@ -26,7 +26,7 @@ As [we make an Android Obfuscator](https://www.preemptive.com/products/dasho/ove
 * *Minification*, as in `minifyEnabled`, is sometimes used to describe the combination of Shrinking and Renaming for the purpose of reducing the size of an application or library.
 
 In addition to Renaming and Code Shrinking, R8 also performs *Optimization*, which rewrites code to improve its performance and further reduce its size.
-The Android Gradle Plugin also performs *Resource Shrinking*, which reduces the size of resources in a similiar manner to the way that Code Shrinking reduces the size of applications or libraries.
+The Android Gradle Plugin also performs *Resource Shrinking*, which reduces the size of resources in a similar manner to the way that Code Shrinking reduces the size of applications or libraries.
 This is not a feature of R8 itself, but they are related processes; the Android Gradle Plugin requires that you enable a code shrinker to shrink resources.
 
 ### Who We Are
@@ -63,7 +63,7 @@ These rules are configured by proving a [class specification](#class_spec) and o
 
 | Rule (and Arguments)                                         | Description   |
 |--------------------------------------------------------------|---------------|
-| `-keep[,<modifier>[...]] <class-spec>`                       | Exclude matching classes, and matching members if specified, from shrinking, optimization, and renaming. Shrinking exclusion on the class means that members will not be removed, but does not prevent members from being renamed. Specifying members will prevent them from being renamed if present. ([ProGuard docs](pg_man#keep)) |
+| `-keep[,<modifier>[...]] <class-spec>`                       | Exclude matching classes, and matching members if specified, from shrinking, optimization, and renaming. Shrinking exclusion on the class means that members will not be removed but does not prevent members from being renamed. Specifying members will prevent them from being renamed if present. ([ProGuard docs](pg_man#keep)) |
 | `-keepclassmembers[,<modifier>[...]] <class-spec>`           | Exclude matching members in matching classes from shrinking, optimization, and renaming. ([ProGuard docs](pg_man#keepclassmembers)) |
 | `-keepclasseswithmembers[,<modifier>[...]] <class-spec>`     | Exclude matching classes and matching members from shrinking, optimization, and renaming if the corresponding class has all of the specified members. ([ProGuard docs](pg_man#keepclasseswithmembers)) |
 | `-keepnames[,<modifier>[...]] <class-spec>`                  | Prevent matching classes, and matching members if specified, from being renamed. ([ProGuard docs](pg_man#keepnames)) |
@@ -229,7 +229,7 @@ com.example.packageTwo.ClassThree -> go.here.c.a:
 ### Dictionaries
 
 R8 will provide new names by cycling through the English alphabet.
-By using dictionaries it is possible to control, to a degree, how R8 will determine the new names for classes, methods, and fields.
+By using dictionaries, it is possible to control, to a degree, how R8 will determine the new names for classes, methods, and fields.
 
 | Rule                                       | Description                     |
 |--------------------------------------------|---------------------------------|
@@ -271,7 +271,7 @@ Map files contain direct links between the original and new names of classes, me
 #### -printmapping
 
 Regardless of the `-printmapping` rule, maps will always be output to a variant specific file (e.g.`build/outputs/mapping[/r8][/{flavorName}]/{buildType}/mapping.txt`).
-If `-printmapping` is configured to print to a file in a configuration that is used by more that one variant, the configured file will be overwritten to reflect whichever variant built last.
+If `-printmapping` is configured to print to a file in a configuration that is used by more than one variant, the configured file will be overwritten to reflect whichever variant built last.
 
 ## Unsupported Rules
 
@@ -311,7 +311,7 @@ The following rules are ignored:
 ### Not Applicable
 
 R8 is designed for use with Android projects.
-However some rules it supports are not applicable in Android projects:
+However, some rules it supports are not applicable in Android projects:
 
 | Rule                            | Description                                |
 |---------------------------------|--------------------------------------------|
