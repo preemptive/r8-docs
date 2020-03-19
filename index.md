@@ -75,9 +75,6 @@ These rules are configured by proving a [class specification](#class_spec) and o
 >**Note:** R8's optimization may collapse parts of a class hierarchy.
 For example, if an interface can be replaced everywhere with the only class that implements it, R8's optimizer might do this.
 This can effectively change field and method signatures.
-If this happens, fields and methods referenced in class specifications for `-keep*` rules may not match.
-Conversely, some `-keep*` rules will effectively tell R8 not to alter the hierarchy.
-This issue has been observed with use of `-keepnames` ([See issue](itg/130791310)).
 
 <a name="modifiers"></a>
 Keep rule modifiers:
@@ -267,22 +264,8 @@ Map files contain direct links between the original and new names of classes, me
 
 | Rule                         | Description                                   |
 |------------------------------|-----------------------------------------------|
-| `-applymapping <filename>`   | Use the specified map for renaming. R8 is [incompatible](#applymapping) with ProGuard's behavior for this rule. ([ProGuard docs](pg_man#applymapping)) ([See issue](itg/130132888)) |
+| `-applymapping <filename>`   | Use the specified map for renaming. ([ProGuard docs](pg_man#applymapping)) |
 | `-printmapping [<filename>]` | Print a mapping from the original to the new names to the specified file, or to stdout if there is no file specified.  ([ProGuard docs](pg_man#printmapping)) ([See note](#printmapping)) |
-
-<a name="applymapping"></a>
-#### -applymapping
-
-The `-applymapping` rule should force R8 to use the names from the map when assigning new names.
-There are some [issues](itg/130132888) with how R8 handles `-applymapping`:
-
-1. R8 will not honor names provided if there is no specific `-keep` rule in place for that class, method, or field.
-2. R8 outputs a corrupt `mapping.txt` file when `-applymapping` is used.
-
-Google is [not supporting](itg/130132888) this rule for incremental renaming, so it should be used carefully.
-If you need a specific name given to a class, method, or field, you need to configure both `-applymapping` and `-keep`.
-
->**Note**: Do **NOT** use `-keep,allowobfuscation` in this scenario because R8 will not honor the new names from the map using that configuration.
 
 <a name="printmapping"></a>
 #### -printmapping
