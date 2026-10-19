@@ -1,2 +1,9 @@
-This repository contains the source for [r8-docs.preemptive.com](https://r8-docs.preemptive.com).
-We encourage you to contribute by opening [issues](https://github.com/preemptive/r8-docs/issues) or submitting pull requests.
+# r8-docs
+
+> **This repository has moved to a new public location.**
+
+The source code for this project is now maintained at:
+
+## [https://github.com/sembi-oss/r8-docs](https://github.com/sembi-oss/r8-docs)
+
+Please update your bookmarks, forks, and any references to point to the new address.
